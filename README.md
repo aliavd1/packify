@@ -17,3 +17,5 @@ to this in your browser, and you can call your Go code from devtools.
 ## Building
 
 To build a redistributable, production mode package, use `wails build`.
+
+go run main.go --app=myapp --version=1.0.0 --arch=amd64 --icon=icon.png --bin=./myapp --docs=README.md,LICENSE --out=./dist
