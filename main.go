@@ -3,6 +3,7 @@ package main
 import (
 	"embed"
 	"packify/config"
+	"packify/core"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -14,6 +15,7 @@ var assets embed.FS
 
 func main() {
 	appConfig := config.NewAppConfig()
+	config := core.NewConfig(appConfig)
 
 	err := wails.Run(&options.App{
 		Title:  appConfig.Info.Title,
@@ -22,9 +24,10 @@ func main() {
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
-		OnStartup:        appConfig.Startup,
+		OnStartup: appConfig.Startup,
 		Bind: []interface{}{
 			appConfig,
+			config,
 		},
 	})
 

@@ -8,11 +8,13 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"packify/config"
 	"path/filepath"
 	"strings"
 )
 
 type Config struct {
+	appConfig   *config.AppConfig
 	AppName     string
 	Version     string
 	Arch        string
@@ -21,6 +23,10 @@ type Config struct {
 	OutputDir   string
 	DesktopName string
 	Docs        []string
+}
+
+func NewConfig(appConfig *config.AppConfig) *Config {
+	return &Config{appConfig: appConfig}
 }
 
 func StartProcess() {
