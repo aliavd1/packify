@@ -1,0 +1,109 @@
+/************************************************/
+/* Tailwindcss */
+/************************************************/
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/************************************************/
+/* FontFace */
+/************************************************/
+/* Persian */
+@font-face {
+    font-family: 'IRAN Sans';
+    src: url('../assets/fonts/Iransans/IRANSansWeb(FaNum).eot?-fvbane');
+    src: url('../assets/fonts/Iransans/IRANSansWeb(FaNum).eot?#iefix-fvbane') format('embedded-opentype'),
+    url('../assets/fonts/Iransans/IRANSansWeb(FaNum).woff?-fvbane') format('woff'),
+    url('../assets/fonts/Iransans/IRANSansWeb(FaNum).woff2?-fvbane') format('woff2'),
+    url('../assets/fonts/Iransans/IRANSansWeb(FaNum).ttf?-fvbane') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/************************************************/
+/* Root, themes */
+/************************************************/
+:root {
+    --font-family: "IRAN Sans" !important;
+}
+
+/************************************************/
+/* All, body, html */
+/************************************************/
+* {
+    font-family: var(--font-family);
+    font-size: 15px;
+    user-select: none;
+    -moz-user-select: none;
+}
+
+html, body, #root {
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background-color: white;
+}
+
+::selection {
+    background-color: orange !important;
+}
+
+
+
+.page {
+    @apply w-full;
+    @apply min-h-screen;
+    @apply bg-white;
+}
+
+.dark .page {
+    @apply w-full;
+    @apply min-h-screen;
+    @apply bg-neutral-800;
+}
+
+.rmdp-today span,
+.rmdp-day span:hover {
+    @apply !bg-orange-400;
+}
+
+.rmdp-selected span{
+    @apply !bg-orange-600;
+}
+
+
+.dark .rmdp-header-values,
+.dark .rmdp-week-day,
+.dark .rmdp-day {
+    @apply !text-white;
+}
+
+.dark .rmdp-wrapper,
+.dark .rmdp-day-picker,
+.dark .rmdp-month-picker,
+.dark .rmdp-year-picker,
+.dark .rmdp-container .ep-arrow::after {
+    @apply !bg-neutral-800;
+}
+
+.dark .rmdp-container .ep-arrow[direction="bottom"] {
+    @apply !border-t !border-neutral-800;
+}
+
+.dark .rmdp-container .ep-arrow[direction="top"] {
+    @apply !border-b !border-neutral-800;
+}
+
+.fa-spin-fast {
+    animation: spin 1000ms linear infinite;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
