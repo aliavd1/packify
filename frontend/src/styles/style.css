@@ -1,9 +1,7 @@
 /************************************************/
 /* Tailwindcss */
 /************************************************/
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 /************************************************/
 /* FontFace */
@@ -46,7 +44,7 @@ html, body, #root {
 }
 
 ::selection {
-    background-color: orange !important;
+    @apply !bg-blue-500;
 }
 
 
