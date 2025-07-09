@@ -1,5 +1,5 @@
-const ToggleButton = ({
-  open,
+const ToggleThemeButton = ({
+  isDark,
   btnClasses = "",
   firstIcon,
   firstIconColor = "white",
@@ -13,17 +13,17 @@ const ToggleButton = ({
       <i
         className={`far ${secondIcon} fa-xl absolute transition-all duration-${duration} 
         text-${secondIconColor} ${
-          open ? "rotate-0 opacity-100" : "-rotate-45 opacity-0"
+          isDark ? "rotate-0 opacity-100" : "-rotate-45 opacity-0"
         }`}
       ></i>
       <i
         className={`far ${firstIcon} fa-xl absolute transition-all duration-${duration} 
         text-${firstIconColor} ${
-          open ? "rotate-45 opacity-0" : "rotate-0 opacity-100"
+          isDark ? "rotate-45 opacity-0" : "rotate-0 opacity-100"
         }`}
       ></i>
     </button>
   );
 };
 
-export default ToggleButton;
+export default ToggleThemeButton;
