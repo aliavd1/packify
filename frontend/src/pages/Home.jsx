@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import Stepper from "../components/Stepper";
-import ToggleButton from "../components/ToggleButton";
+import ToggleThemeButton from "../components/ToggleThemeButton";
 
 const Home = () => {
   const steps = ["شروع", "اطلاعات", "تأیید", "پایان"];
   const [currentStep, setCurrentStep] = useState(0);
   const [isDark, setIsDark] = useState(() => {
-    return JSON.parse(localStorage.getItem("isDark") || false);
+    return JSON.parse(localStorage.getItem("isDark") || "false");
   });
 
   useEffect(() => {
@@ -20,16 +20,12 @@ const Home = () => {
 
   return (
     <div className="page p-6">
-      <ToggleButton
-        open={isDark}
-        btnClasses={`relative w-14 h-14 bg-neutral-100 rounded-full shadow-lg 
-                  hover:bg-neutral-200 transition-all duration-200 flex justify-center items-center 
-                  dark:bg-neutral-700 dark:hover:bg-neutral-600 cursor-pointer
-                ${
-                  open
-                    ? "opacity-100 transform translate-y-0 active:scale-90 will-change-transform visible"
-                    : "opacity-0 transform translate-y-4 invisible"
-                }`}
+      <ToggleThemeButton
+        isDark={isDark}
+        btnClasses="relative w-14 h-14 bg-neutral-100 rounded-full shadow-lg 
+                  hover:bg-neutral-200 duration-200 flex justify-center items-center 
+                  cursor-pointer transform active:scale-90 will-change-transform 
+                  dark:bg-neutral-700 dark:hover:bg-neutral-600"
         firstIcon="fa-sun-bright"
         firstIconColor="black"
         secondIcon="fa-moon"
