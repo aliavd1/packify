@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import Stepper from "../components/Stepper";
 import ToggleThemeButton from "../components/ToggleThemeButton";
+import ArrowStepper from "../components/ArrowStepper";
 
 const Home = () => {
-  const steps = ["شروع", "اطلاعات", "تأیید", "پایان"];
-  const [currentStep, setCurrentStep] = useState(0);
+  const steps = ["Complete info", "Select icon", "Select app", "Confirm"];
   const [isDark, setIsDark] = useState(() => {
     return JSON.parse(localStorage.getItem("isDark") || "false");
   });
@@ -19,43 +18,23 @@ const Home = () => {
   }, [isDark]);
 
   return (
-    <div className="page p-6">
-      <ToggleThemeButton
-        isDark={isDark}
-        btnClasses="relative w-14 h-14 bg-neutral-100 rounded-full shadow-lg 
-                  hover:bg-neutral-200 duration-200 flex justify-center items-center 
-                  cursor-pointer transform active:scale-90 will-change-transform 
-                  dark:bg-neutral-700 dark:hover:bg-neutral-600"
-        firstIcon="fa-sun-bright"
-        firstIconColor="black"
-        secondIcon="fa-moon"
-        secondIconColor="white"
-        duration={300}
-        onClick={() => setIsDark((value) => !value)}
-      />
-
-      <Stepper steps={steps} currentStep={currentStep} />
-
-      <div className="mt-8">
-        <p>مرحله فعلی: {steps[currentStep]}</p>
-
-        <div className="mt-4 space-x-2">
-          <button
-            onClick={() => setCurrentStep((prev) => Math.max(prev - 1, 0))}
-            className="bg-gray-300 px-4 py-2 rounded"
-          >
-            قبلی
-          </button>
-          <button
-            onClick={() =>
-              setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1))
-            }
-            className="bg-blue-500 text-white px-4 py-2 rounded"
-          >
-            بعدی
-          </button>
-        </div>
+    <div className="page p-5">
+      <div className="flex justify-between items-center px-4 pt-4">
+        <ToggleThemeButton
+          isDark={isDark}
+          btnClasses="fixed bottom-5 right-5 w-14 h-14 bg-neutral-300 rounded-full shadow-lg 
+          hover:bg-neutral-200 flex justify-center items-center dark:bg-neutral-700 
+          dark:hover:bg-neutral-600 cursor-pointer active:scale-90 will-change-transform duration-300"
+          firstIcon="fa-sun-bright"
+          firstIconColor="black"
+          secondIcon="fa-moon"
+          secondIconColor="white"
+          duration={300}
+          onClick={() => setIsDark((value) => !value)}
+        />
       </div>
+
+      <ArrowStepper steps={steps} />
     </div>
   );
 };
