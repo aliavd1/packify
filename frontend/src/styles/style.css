@@ -7,14 +7,9 @@
 /************************************************/
 /* FontFace */
 /************************************************/
-/* Persian */
 @font-face {
-    font-family: 'IRAN Sans';
-    src: url('../assets/fonts/Iransans/IRANSansWeb(FaNum).eot?-fvbane');
-    src: url('../assets/fonts/Iransans/IRANSansWeb(FaNum).eot?#iefix-fvbane') format('embedded-opentype'),
-    url('../assets/fonts/Iransans/IRANSansWeb(FaNum).woff?-fvbane') format('woff'),
-    url('../assets/fonts/Iransans/IRANSansWeb(FaNum).woff2?-fvbane') format('woff2'),
-    url('../assets/fonts/Iransans/IRANSansWeb(FaNum).ttf?-fvbane') format('truetype');
+    font-family: "Roboto-Regular";
+    src: url("../assets/fonts/Roboto-Regular.ttf?-fvbane") format("truetype");
     font-weight: normal;
     font-style: normal;
 }
@@ -23,7 +18,8 @@
 /* Root, themes */
 /************************************************/
 :root {
-    --font-family: "IRAN Sans" !important;
+    --font-family: "Roboto-Regular" !important;
+    --space: 30px;
 }
 
 /************************************************/
