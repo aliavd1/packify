@@ -22,21 +22,19 @@ const Home = () => {
   }, [isDark]);
 
   return (
-    <div className="page p-5">
-      <div className="flex justify-between items-center px-4 pt-4">
-        <ToggleThemeButton
-          isDark={isDark}
-          btnClasses="fixed bottom-5 right-5 w-14 h-14 bg-neutral-300 rounded-full shadow-lg 
+    <div className="page">
+      <ToggleThemeButton
+        isDark={isDark}
+        btnClasses="fixed bottom-5 right-5 w-12 h-12 bg-neutral-300 rounded-full shadow-lg 
           hover:bg-neutral-200 flex justify-center items-center dark:bg-neutral-700 
           dark:hover:bg-neutral-600 cursor-pointer active:scale-90 will-change-transform duration-300"
-          firstIcon="fa-sun-bright"
-          firstIconColor="black"
-          secondIcon="fa-moon"
-          secondIconColor="white"
-          duration={300}
-          onClick={() => setIsDark((value) => !value)}
-        />
-      </div>
+        firstIcon="fa-sun-bright"
+        firstIconColor="black"
+        secondIcon="fa-moon"
+        secondIconColor="white"
+        duration={300}
+        onClick={() => setIsDark((value) => !value)}
+      />
 
       <ArrowStepper steps={steps} />
     </div>
