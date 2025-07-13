@@ -11,13 +11,13 @@ const ToggleThemeButton = ({
   return (
     <button onClick={onClick} className={btnClasses}>
       <i
-        className={`far ${secondIcon} fa-xl absolute transition-all duration-${duration} 
+        className={`far ${secondIcon} fa-lg absolute transition-all duration-${duration} 
         text-${secondIconColor} ${
           isDark ? "rotate-0 opacity-100" : "-rotate-45 opacity-0"
         }`}
       ></i>
       <i
-        className={`far ${firstIcon} fa-xl absolute transition-all duration-${duration} 
+        className={`far ${firstIcon} fa-lg absolute transition-all duration-${duration} 
         text-${firstIconColor} ${
           isDark ? "rotate-45 opacity-0" : "rotate-0 opacity-100"
         }`}
