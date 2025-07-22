@@ -92,8 +92,6 @@ html, body, #root {
 .stepper__item.current {
   background-color: #2563eb;
   color: white;
-  /* border-color: #2563eb; */
-  font-weight: bold;
   box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
   z-index: 2;
 }
@@ -112,8 +110,6 @@ html, body, #root {
     calc(100% - var(--arrow-size)) 100%,
     0% 100%
   );
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
   margin-left: 0;
 }
 
@@ -125,6 +121,4 @@ html, body, #root {
     100% 100%,
     0% 100%
   );
-  border-top-right-radius: 8px;
-  border-bottom-right-radius: 8px;
 }
