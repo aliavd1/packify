@@ -62,7 +62,7 @@ const Stepper = ({ steps }) => {
           className={`px-4 py-2 rounded ${
             currentStep === 0
               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-              : "bg-blue-700 text-white"
+              : "bg-blue-700 text-white cursor-pointer will-change-transform duration-300active:scale-95"
           }`}
         >
           Back
@@ -70,7 +70,7 @@ const Stepper = ({ steps }) => {
         <button
           onClick={goNext}
           disabled={currentStep === steps.length - 1}
-          className={`px-4 py-2 rounded ${
+          className={`px-4 py-2 rounded cursor-pointer will-change-transform duration-300 active:scale-95 ${
             currentStep === steps.length - 1
               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
               : "bg-blue-700 text-white"
