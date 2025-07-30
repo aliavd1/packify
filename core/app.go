@@ -76,7 +76,7 @@ func createDebStructure(ifi *InstallationFileInfo, root string) {
 	os.WriteFile(filepath.Join(desktop, ifi.DesktopName), []byte(desktopEntry), 0644)
 
 	for _, doc := range ifi.Docs {
-		copyFile(doc, filepath.Join(root, "usr", "share", ifi.FileName, filepath.Base(doc)))
+		copyFile(doc, filepath.Join(root, "usr", "share", "docs", ifi.FileName, filepath.Base(doc)))
 	}
 }
 
