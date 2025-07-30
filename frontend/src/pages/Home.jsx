@@ -19,6 +19,10 @@ const Home = () => {
       content: <p>Select app</p>,
     },
     {
+      header: "Select docs, licences, readme",
+      content: <p>Select docs, licences, readme</p>,
+    },
+    {
       header: "Confirm",
       content: <p>Confirm</p>,
     },
