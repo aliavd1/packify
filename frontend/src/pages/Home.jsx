@@ -3,24 +3,41 @@ import ToggleThemeButton from "../components/ToggleThemeButton";
 import Stepper from "../components/Stepper";
 import CompleteInfoForm from "../components/CompleteInfoForm";
 import { Moon, Sun } from "lucide-react";
+import ChooseFile from "../components/ChooseFile";
 
 const Home = () => {
+  const [form, setForm] = useState({
+    fileName: "",
+    version: "",
+    arch: "",
+    desktopName: "",
+  });
+
+  const updateFormField = (field, value) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const [iconPath, setIconPath] = useState();
+  const [binaryPath, setBinaryPath] = useState();
+  const [docs, setDocs] = useState([]);
+  const [outputPath, setOutputPath] = useState();
+
   const steps = [
     {
       header: "Complete info",
-      content: <CompleteInfoForm />,
+      content: <CompleteInfoForm form={form} onChange={updateFormField} />,
     },
     {
       header: "Select icon",
-      content: <p>Select icon</p>,
+      content: <ChooseFile onChange={setIconPath} />,
     },
     {
-      header: "Select app",
-      content: <p>Select app</p>,
+      header: "Select binary file",
+      content: <ChooseFile onChange={setBinaryPath} />,
     },
     {
-      header: "Select docs, licences, readme",
-      content: <p>Select docs, licences, readme</p>,
+      header: "Select docs, licences, readme, ...",
+      content: <ChooseFile onChange={setDocs} multi />,
     },
     {
       header: "Confirm",
