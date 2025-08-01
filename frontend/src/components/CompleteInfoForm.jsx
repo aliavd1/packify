@@ -1,20 +1,6 @@
-import { useState } from "react";
 import Select from "./Select";
 
-const CompleteInfoForm = () => {
-  const [form, setForm] = useState({
-    fileName: "",
-    version: "",
-    arch: "",
-    desktopName: "",
-    docs: [""],
-  });
-  const [arch, setArch] = useState("");
-
-  const updateField = (field, value) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
-  };
-
+const CompleteInfoForm = ({ form, onChange }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form submitted:", form);
@@ -32,7 +18,7 @@ const CompleteInfoForm = () => {
         <input
           type="text"
           value={form.fileName}
-          onChange={(e) => updateField("fileName", e.target.value)}
+          onChange={(e) => onChange("fileName", e.target.value)}
           className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-700 transition"
         />
       </div>
@@ -44,7 +30,7 @@ const CompleteInfoForm = () => {
         <input
           type="text"
           value={form.version}
-          onChange={(e) => updateField("version", e.target.value)}
+          onChange={(e) => onChange("version", e.target.value)}
           className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-700 transition"
         />
       </div>
@@ -53,7 +39,7 @@ const CompleteInfoForm = () => {
         <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">
           Architecture
         </label>
-        <Select value={arch} onChange={setArch} />
+        <Select value={form.arch} onChange={(e) => onChange("arch", e)} />
       </div>
 
       <div>
@@ -63,7 +49,7 @@ const CompleteInfoForm = () => {
         <input
           type="text"
           value={form.desktopName}
-          onChange={(e) => updateField("desktopName", e.target.value)}
+          onChange={(e) => onChange("desktopName", e.target.value)}
           className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-700 transition"
         />
       </div>
