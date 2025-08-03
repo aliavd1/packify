@@ -16,6 +16,7 @@ var assets embed.FS
 func main() {
 	appConfig := config.NewAppConfig()
 	installationFileInfo := core.NewInstallationFileInfo(appConfig)
+	filePicker := core.NewFilePicker(appConfig)
 
 	err := wails.Run(&options.App{
 		Title:  appConfig.Info.Title,
@@ -28,6 +29,7 @@ func main() {
 		Bind: []interface{}{
 			appConfig,
 			installationFileInfo,
+			filePicker,
 		},
 	})
 

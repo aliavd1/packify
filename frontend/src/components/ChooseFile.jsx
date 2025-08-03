@@ -1,23 +1,28 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { UploadCloud } from "lucide-react";
+import {
+  OpenMultiFile,
+  OpenSingleFile,
+} from "../../wailsjs/go/core/FilePicker";
 
-const ChooseFile = ({ onChange, multi = false }) => {
+const ChooseFile = ({
+  title,
+  displayName,
+  pattern,
+  onChange,
+  multi = false,
+}) => {
   const [droppedFiles, setDroppedFiles] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
-  const fileInputRef = useRef(null);
 
-  const processFiles = (files) => {
-    const fileArray = Array.from(files);
-    const selectedFiles = multi ? fileArray : [fileArray[0]];
-
-    setDroppedFiles(selectedFiles);
-
-    const paths = selectedFiles.map((file) => file.path);
+  const processFiles = (filesPath) => {
+    const fileArray = Array.from(filesPath);
+    setDroppedFiles(fileArray);
 
     if (multi) {
-      onChange(paths);
+      onChange(fileArray);
     } else {
-      onChange(paths[0]);
+      onChange(fileArray[0]);
     }
   };
 
@@ -36,24 +41,19 @@ const ChooseFile = ({ onChange, multi = false }) => {
     setIsDragging(false);
   };
 
-  const handleFileSelect = (e) => {
-    processFiles(e.target.files);
-  };
+  const openFilePicker = async () => {
+    let filesPath = [];
 
-  const openFilePicker = () => {
-    fileInputRef.current.click();
+    if (multi) {
+      filesPath = await OpenMultiFile(title, displayName, pattern);
+    } else {
+      filesPath = [await OpenSingleFile(title, displayName, pattern)];
+    }
+    processFiles(filesPath);
   };
 
   return (
     <>
-      <input
-        type="file"
-        multiple={multi}
-        ref={fileInputRef}
-        onChange={handleFileSelect}
-        className="hidden"
-      />
-
       <div
         onClick={openFilePicker}
         onDrop={handleDrop}
@@ -75,9 +75,9 @@ const ChooseFile = ({ onChange, multi = false }) => {
 
         {droppedFiles.length > 0 && (
           <ul className="mt-4 w-full max-w-md text-center text-sm text-gray-700 dark:text-gray-300 space-y-1">
-            {droppedFiles.map((file, idx) => (
+            {droppedFiles.map((filePath, idx) => (
               <li key={idx} className="truncate">
-                {file.name}
+                {filePath}
               </li>
             ))}
           </ul>
