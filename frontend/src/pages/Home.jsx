@@ -29,15 +29,37 @@ const Home = () => {
     },
     {
       header: "Select icon",
-      content: <ChooseFile onChange={setIconPath} />,
+      content: (
+        <ChooseFile
+          title="Select Application Icon"
+          displayName="Icon Files (*.png, *.svg, *.xpm)"
+          pattern="*.png;*.svg;*.xpm"
+          onChange={setIconPath}
+        />
+      ),
     },
     {
       header: "Select binary file",
-      content: <ChooseFile onChange={setBinaryPath} />,
+      content: (
+        <ChooseFile
+          title="Select Executable File"
+          displayName="Executable Files (*)"
+          pattern="*"
+          onChange={setBinaryPath}
+        />
+      ),
     },
     {
       header: "Select docs, licences, readme, ...",
-      content: <ChooseFile onChange={setDocs} multi />,
+      content: (
+        <ChooseFile
+          multi
+          title="Select Documentation Files"
+          displayName="Documentation Files (*.md, *.txt, *.html, *.gz)"
+          pattern="*.md;*.txt;*.html;*.gz"
+          onChange={setDocs}
+        />
+      ),
     },
     {
       header: "Confirm",
