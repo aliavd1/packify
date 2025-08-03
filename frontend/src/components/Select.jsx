@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { ChevronUp } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 const Select = ({ value, onChange }) => {
   const [open, setOpen] = useState(false);
@@ -35,7 +35,7 @@ const Select = ({ value, onChange }) => {
         className="w-full flex justify-between items-center cursor-pointer border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
       >
         {value || "Select architecture"}
-        <ChevronUp
+        <ChevronDown
           className={`w-5 h-5 ml-2 transition-transform ${
             open ? "rotate-180" : ""
           }`}
