@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UploadCloud } from "lucide-react";
 import {
   OpenMultiFile,
   OpenSingleFile,
+  FileDrop,
+  FileDropOff,
 } from "../../wailsjs/go/core/FilePicker";
+import { EventsOn } from "../../../../exam-result/frontend/wailsjs/runtime/runtime";
 
 const ChooseFile = ({
   title,
@@ -29,7 +32,6 @@ const ChooseFile = ({
   const handleDrop = (e) => {
     e.preventDefault();
     setIsDragging(false);
-    processFiles(e.dataTransfer.files);
   };
 
   const handleDragOver = (e) => {
@@ -52,14 +54,25 @@ const ChooseFile = ({
     processFiles(filesPath);
   };
 
+  useEffect(() => {
+    FileDrop();
+
+    const eventOff = EventsOn("fileDropEvent", (paths) => {
+      processFiles(paths);
+    });
+    return () => {
+      eventOff();
+      FileDropOff();
+    };
+  }, []);
+
   return (
-    <>
-      <div
-        onClick={openFilePicker}
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        className={`h-[300px] flex flex-col items-center justify-center border-2 border-dashed 
+    <div
+      onClick={openFilePicker}
+      onDrop={handleDrop}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      className={`h-[300px] flex flex-col items-center justify-center border-2 border-dashed 
             rounded-2xl p-8 cursor-pointer transition-all duration-300
           ${
             isDragging
@@ -67,23 +80,22 @@ const ChooseFile = ({
               : "border-gray-300 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-800"
           }
         `}
-      >
-        <UploadCloud className="w-12 h-12 text-gray-400 dark:text-gray-500 mb-2" />
-        <p className="text-center text-gray-600 dark:text-gray-300">
-          Drag & drop your files here or click to select
-        </p>
+    >
+      <UploadCloud className="w-12 h-12 text-gray-400 dark:text-gray-500 mb-2" />
+      <p className="text-center text-gray-600 dark:text-gray-300">
+        Drag & drop your files here or click to select
+      </p>
 
-        {droppedFiles.length > 0 && (
-          <ul className="mt-4 w-full max-w-md text-center text-sm text-gray-700 dark:text-gray-300 space-y-1">
-            {droppedFiles.map((filePath, idx) => (
-              <li key={idx} className="truncate">
-                {filePath}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    </>
+      {droppedFiles.length > 0 && (
+        <ul className="mt-4 w-full max-w-md text-center text-sm text-gray-700 dark:text-gray-300 space-y-1">
+          {droppedFiles.map((filePath, idx) => (
+            <li key={idx} className="truncate">
+              {filePath}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 };
 

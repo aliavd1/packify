@@ -48,3 +48,13 @@ func (filePicker *FilePicker) OpenMultiFile(title, displayName, pattern string) 
 
 	return filesPath
 }
+
+func (filePicker *FilePicker) FileDrop() {
+	runtime.OnFileDrop(filePicker.appConfig.Ctx, func(x, y int, paths []string) {
+		runtime.EventsEmit(filePicker.appConfig.Ctx, "fileDropEvent", paths)
+	})
+}
+
+func (filePicker *FilePicker) FileDropOff() {
+	runtime.OnFileDropOff(filePicker.appConfig.Ctx)
+}
