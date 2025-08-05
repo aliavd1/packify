@@ -9,7 +9,7 @@ const CompleteInfoForm = ({ form, onChange }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 rounded-xl mt-10 bg-neutral-100 dark:bg-gray-900 p-6 shadow-lg transition"
+      className="space-y-6 mt-10 p-6 transition"
     >
       <div>
         <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">

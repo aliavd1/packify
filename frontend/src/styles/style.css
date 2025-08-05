@@ -2,7 +2,6 @@
 /* Tailwindcss */
 /************************************************/
 @import "tailwindcss";
-@custom-variant dark (&:where(.dark, .dark *));
 
 /************************************************/
 /* FontFace */
@@ -41,20 +40,6 @@ html, body, #root {
 
 ::selection {
     @apply !bg-blue-500;
-}
-
-
-
-.page {
-    @apply w-full;
-    @apply min-h-screen;
-    @apply bg-white;
-}
-
-.dark .page {
-    @apply w-full;
-    @apply min-h-screen;
-    @apply bg-neutral-800;
 }
 
 @keyframes dropdown {
