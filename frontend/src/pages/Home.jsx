@@ -7,7 +7,7 @@ const Home = () => {
   const [form, setForm] = useState({
     fileName: "",
     version: "",
-    arch: "",
+    arch: [],
     desktopName: "",
   });
 
