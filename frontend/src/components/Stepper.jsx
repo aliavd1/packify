@@ -4,7 +4,12 @@ const Stepper = ({ steps }) => {
   const [currentStep, setCurrentStep] = useState(0);
 
   const goNext = () => {
-    if (currentStep < steps.length - 1) setCurrentStep((prev) => prev + 1);
+    if (currentStep < steps.length - 1) {
+      setCurrentStep((prev) => prev + 1);
+    } else {
+      steps[steps.length - 1].onSubmit();
+      setCurrentStep(0);
+    }
   };
 
   const goBack = () => {
@@ -69,14 +74,9 @@ const Stepper = ({ steps }) => {
         </button>
         <button
           onClick={goNext}
-          disabled={currentStep === steps.length - 1}
-          className={`px-4 py-2 rounded cursor-pointer will-change-transform duration-300 active:scale-95 ${
-            currentStep === steps.length - 1
-              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-              : "bg-blue-700 text-white"
-          }`}
+          className="px-4 py-2 rounded cursor-pointer will-change-transform duration-300 active:scale-95 bg-blue-700 text-white"
         >
-          Next
+          {currentStep < steps.length - 1 ? "Next" : "Create"}
         </button>
       </div>
     </div>
