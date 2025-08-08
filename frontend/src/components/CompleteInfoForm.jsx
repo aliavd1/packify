@@ -1,16 +1,14 @@
 import Select from "./Select";
 
 const CompleteInfoForm = ({ form, onChange }) => {
+  const selectOptions = ["amd64", "arm64", "x86"];
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form submitted:", form);
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-6 mt-10 p-6 transition"
-    >
+    <form onSubmit={handleSubmit} className="space-y-6 mt-10 p-6 transition">
       <div>
         <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">
           File Name
@@ -39,7 +37,12 @@ const CompleteInfoForm = ({ form, onChange }) => {
         <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">
           Architecture
         </label>
-        <Select value={form.arch} onChange={(e) => onChange("arch", e)} />
+        <Select
+          options={selectOptions}
+          value={form.arch}
+          onChange={(e) => onChange("arch", e)}
+          multi
+        />
       </div>
 
       <div>
