@@ -2,28 +2,54 @@ import { useState } from "react";
 import Stepper from "../components/Stepper";
 import CompleteInfoForm from "../components/CompleteInfoForm";
 import ChooseFile from "../components/ChooseFile";
+import ConfirmForm from "../components/ConfirmForm";
 
 const Home = () => {
-  const [form, setForm] = useState({
+  const [completeForm, setCompleteForm] = useState({
     fileName: "",
     version: "",
     arch: [],
     desktopName: "",
   });
 
-  const updateFormField = (field, value) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
+  const updateCompleteFormField = (field, value) => {
+    setCompleteForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const [confirmForm, setConfirmForm] = useState({
+    outputPath: "",
+    outputFormat: [],
+  });
+
+  const updateConfirmFormField = (field, value) => {
+    setConfirmForm((prev) => ({ ...prev, [field]: value }));
   };
 
   const [iconPath, setIconPath] = useState();
   const [binaryPath, setBinaryPath] = useState();
   const [docs, setDocs] = useState([]);
-  const [outputPath, setOutputPath] = useState();
+
+  const handleSubmit = () => {
+    const data = {
+      ...completeForm,
+      ...confirmForm,
+      arch: completeForm.arch.join(","),
+      iconPath: iconPath,
+      binaryPath: binaryPath,
+      docs: docs,
+    };
+    console.log("data: ", data);
+  };
 
   const steps = [
     {
       header: "Complete info",
-      content: <CompleteInfoForm form={form} onChange={updateFormField} />,
+      content: (
+        <CompleteInfoForm
+          form={completeForm}
+          onChange={updateCompleteFormField}
+        />
+      ),
     },
     {
       header: "Select icon",
@@ -61,7 +87,10 @@ const Home = () => {
     },
     {
       header: "Confirm",
-      content: <p>Confirm</p>,
+      content: (
+        <ConfirmForm form={confirmForm} onChange={updateConfirmFormField} />
+      ),
+      onSubmit: handleSubmit,
     },
   ];
 
