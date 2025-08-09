@@ -14,6 +14,16 @@ func NewFilePicker(appConfig *config.AppConfig) *FilePicker {
 	return &FilePicker{appConfig: appConfig}
 }
 
+func (filePicker *FilePicker) ChooseDirectoryPath(title string) string {
+	dirPath, err := runtime.OpenDirectoryDialog(filePicker.appConfig.Ctx, runtime.OpenDialogOptions{
+		Title:                title,
+	})
+	if err != nil {
+		return "Error: " + err.Error()
+	}
+	return dirPath
+}
+
 func (filePicker *FilePicker) OpenSingleFile(title, displayName, pattern string) string {
 	filePath, err := runtime.OpenFileDialog(filePicker.appConfig.Ctx, runtime.OpenDialogOptions{
 		Title:                title,
