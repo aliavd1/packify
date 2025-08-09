@@ -19,7 +19,7 @@ const Stepper = ({ steps }) => {
   return (
     <div className="w-full max-w-2xl mx-auto p-4">
       {/* Stepper */}
-      <div className="relative flex items-center justify-between mb-8">
+      <div className="relative flex items-center justify-between my-10">
         {/* Line behind circles */}
         <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-300 -translate-y-1/2 z-0"></div>
 
@@ -52,12 +52,12 @@ const Stepper = ({ steps }) => {
       </div>
 
       {/* Step Header */}
-      <p className="!text-4xl font-semibold mb-4 dark:text-white">
+      <p className="!text-4xl font-semibold dark:text-white">
         {steps[currentStep].header}
       </p>
 
       {/* Step Content */}
-      <div className="mb-8">{steps[currentStep].content}</div>
+      <div className="mb-3">{steps[currentStep].content}</div>
 
       {/* Navigation Buttons */}
       <div className="flex justify-between">
