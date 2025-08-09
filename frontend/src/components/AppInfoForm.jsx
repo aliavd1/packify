@@ -1,6 +1,6 @@
 import Select from "./Select";
 
-const CompleteInfoForm = ({ form, onChange }) => {
+const AppInfoForm = ({ form, onChange }) => {
   const selectOptions = ["amd64", "arm64", "x86"];
 
   const handleSubmit = (e) => {
@@ -8,7 +8,7 @@ const CompleteInfoForm = ({ form, onChange }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 mt-10 p-6 transition">
+    <form onSubmit={handleSubmit} className="space-y-6 mt-5 p-6 transition">
       <div>
         <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">
           File Name
@@ -60,4 +60,4 @@ const CompleteInfoForm = ({ form, onChange }) => {
   );
 };
 
-export default CompleteInfoForm;
+export default AppInfoForm;
