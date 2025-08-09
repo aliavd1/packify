@@ -38,6 +38,11 @@ html, body, #root {
     background-color: white;
 }
 
+input, textarea {
+  user-select: text;
+  -moz-user-select: text;
+}
+
 ::selection {
     @apply !bg-blue-500;
 }
