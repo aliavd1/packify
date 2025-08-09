@@ -72,7 +72,7 @@ const ChooseFile = ({
       onDrop={handleDrop}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
-      className={`h-[300px] flex flex-col items-center justify-center border-2 border-dashed 
+      className={`h-[300px] my-5 flex flex-col items-center justify-center border-2 border-dashed 
             rounded-2xl p-8 cursor-pointer transition-all duration-300
           ${
             isDragging
