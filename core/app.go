@@ -19,7 +19,8 @@ type InstallationFileInfo struct {
 	Arch                string
 	IconPath            string
 	BinaryPath          string
-	OutputDir           string
+	outputFormat        []string
+	outputPath          string
 	DesktopName         string
 	MaintainerFirstName string
 	MaintainerLastName  string
@@ -153,26 +154,46 @@ func copyFile(src, dst string) {
 	io.Copy(d, s)
 }
 
-func (ifi *InstallationFileInfo) setInfo(data map[string]string) {
-	// app => myapp, Application name
-	// ver => 1.0.0, Version
-	// arch => amd64, Architecture (amd64, arm64, i386)
-	// icon => icon.png, Icon file
-	// bin => ./myapp, Compiled binary path
-	// out => ./dist, Output directory
-	// docs => README.md,LICENSE, Comma-separated list of docs
-
-	ifi.FileName = data["fileName"]
-	ifi.Version = data["version"]
-	ifi.Arch = data["arch"]
-	ifi.IconPath = data["iconPath"]
-	ifi.BinaryPath = data["binaryPath"]
-	ifi.OutputDir = data["outputPath"]
-	ifi.DesktopName = data["desktopName"] + ".desktop"
-	ifi.Docs = strings.Split(data["docs"], ",")
+func (ifi *InstallationFileInfo) setInfo(data map[string]any) {
+	if v, ok := data["maintainerFirstName"].(string); ok {
+		ifi.MaintainerFirstName = v
+	}
+	if v, ok := data["maintainerLastName"].(string); ok {
+		ifi.MaintainerLastName = v
+	}
+	if v, ok := data["maintainerEmail"].(string); ok {
+		ifi.MaintainerEmail = v
+	}
+	if v, ok := data["fileName"].(string); ok {
+		ifi.FileName = v
+	}
+	if v, ok := data["version"].(string); ok {
+		ifi.Version = v
+	}
+	if v, ok := data["arch"].(string); ok {
+		ifi.Arch = v
+	}
+	if v, ok := data["iconPath"].(string); ok {
+		ifi.IconPath = v
+	}
+	if v, ok := data["binaryPath"].(string); ok {
+		ifi.BinaryPath = v
+	}
+	if v, ok := data["outputFormat"].([]string); ok {
+		ifi.outputFormat = v
+	}
+	if v, ok := data["outputPath"].(string); ok {
+		ifi.outputPath = v
+	}
+	if v, ok := data["desktopName"].(string); ok {
+		ifi.DesktopName = v + ".desktop"
+	}
+	if v, ok := data["docs"].([]string); ok {
+		ifi.Docs = v
+	}
 }
 
-func (ifi *InstallationFileInfo) StartProcess(data map[string]string) {
+func (ifi *InstallationFileInfo) StartProcess(data map[string]any) {
 	ifi.setInfo(data)
 	tempDir, _ := os.MkdirTemp("", "debgen")
 	defer os.RemoveAll(tempDir)
@@ -181,19 +202,27 @@ func (ifi *InstallationFileInfo) StartProcess(data map[string]string) {
 	debRoot := filepath.Join(tempDir, ifi.FileName+"-deb")
 	createDebStructure(ifi, debRoot)
 
-	fmt.Println("[+] Building .deb...")
-	debPath := buildDeb(ifi, debRoot)
+	for _, format := range ifi.outputFormat {
+		switch format {
+		case ".deb":
+			fmt.Println("[+] Building .deb...")
+			createDebStructure(ifi, debRoot)
+			debPath := buildDeb(ifi, debRoot)
+			copyFile(debPath, filepath.Join(ifi.outputPath, filepath.Base(debPath)))
 
-	fmt.Println("[+] Building .tar.gz...")
-	tarPath := buildTarGz(ifi, debRoot)
+		case ".tar":
+			fmt.Println("[+] Building .tar.gz...")
+			tarPath := buildTarGz(ifi, debRoot)
+			copyFile(tarPath, filepath.Join(ifi.outputPath, filepath.Base(tarPath)))
 
-	fmt.Println("[+] Building AppImage...")
-	appImagePath := buildAppImage(ifi, debRoot)
+		case "AppImage":
+			fmt.Println("[+] Building AppImage...")
+			appImagePath := buildAppImage(ifi, debRoot)
+			copyFile(appImagePath, filepath.Join(ifi.outputPath, filepath.Base(appImagePath)))
 
-	os.MkdirAll(ifi.OutputDir, 0755)
-	copyFile(debPath, filepath.Join(ifi.OutputDir, filepath.Base(debPath)))
-	copyFile(tarPath, filepath.Join(ifi.OutputDir, filepath.Base(tarPath)))
-	copyFile(appImagePath, filepath.Join(ifi.OutputDir, filepath.Base(appImagePath)))
-
-	fmt.Println("✅ Done. Packages saved to:", ifi.OutputDir)
+		default:
+			fmt.Println("[-] Unknown format...")
+		}
+	}
+	fmt.Println("✅ Done. Packages saved to:", ifi.outputPath)
 }
