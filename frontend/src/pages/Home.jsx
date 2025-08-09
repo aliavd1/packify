@@ -1,19 +1,30 @@
 import { useState } from "react";
 import Stepper from "../components/Stepper";
-import CompleteInfoForm from "../components/CompleteInfoForm";
+import AppInfoForm from "../components/AppInfoForm";
 import ChooseFile from "../components/ChooseFile";
 import ConfirmForm from "../components/ConfirmForm";
+import { StartProcess } from "../../wailsjs/go/core/InstallationFileInfo";
+import MaintainerInfoForm from "../components/MaintainerInfoForm";
 
 const Home = () => {
-  const [completeForm, setCompleteForm] = useState({
+  const [appInfoForm, setAppInfoForm] = useState({
     fileName: "",
     version: "",
     arch: [],
     desktopName: "",
   });
 
-  const updateCompleteFormField = (field, value) => {
-    setCompleteForm((prev) => ({ ...prev, [field]: value }));
+  const updateAppInfoFormField = (field, value) => {
+    setAppInfoForm((prev) => ({ ...prev, [field]: value }));
+  };
+  const [maintainerInfoForm, setMaintainerInfoForm] = useState({
+    maintainerFirstName: "",
+    maintainerLastName: "",
+    maintainerEmail: "",
+  });
+
+  const updateMaintainerInfoFormField = (field, value) => {
+    setMaintainerInfoForm((prev) => ({ ...prev, [field]: value }));
   };
 
   const [confirmForm, setConfirmForm] = useState({
@@ -31,24 +42,31 @@ const Home = () => {
 
   const handleSubmit = () => {
     const data = {
-      ...completeForm,
+      ...maintainerInfoForm,
+      ...appInfoForm,
       ...confirmForm,
-      arch: completeForm.arch.join(","),
+      arch: appInfoForm.arch.join(","),
       iconPath: iconPath,
       binaryPath: binaryPath,
       docs: docs,
     };
-    console.log("data: ", data);
+    StartProcess(data);
   };
 
   const steps = [
     {
-      header: "Complete info",
+      header: "Complete maintainer info",
       content: (
-        <CompleteInfoForm
-          form={completeForm}
-          onChange={updateCompleteFormField}
+        <MaintainerInfoForm
+          form={maintainerInfoForm}
+          onChange={updateMaintainerInfoFormField}
         />
+      ),
+    },
+    {
+      header: "Complete app info",
+      content: (
+        <AppInfoForm form={appInfoForm} onChange={updateAppInfoFormField} />
       ),
     },
     {
@@ -95,7 +113,7 @@ const Home = () => {
   ];
 
   return (
-    <div className="bg-white dark:bg-neutral-800">
+    <div className="h-screen bg-white dark:bg-neutral-800">
       <Stepper steps={steps} />
     </div>
   );
