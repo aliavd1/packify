@@ -7,31 +7,32 @@ import { StartProcess } from "../../wailsjs/go/core/InstallationFileInfo";
 import MaintainerInfoForm from "../components/MaintainerInfoForm";
 
 const Home = () => {
+  // App info form
   const [appInfoForm, setAppInfoForm] = useState({
     fileName: "",
     version: "",
     arch: [],
     desktopName: "",
   });
-
   const updateAppInfoFormField = (field, value) => {
     setAppInfoForm((prev) => ({ ...prev, [field]: value }));
   };
+
+  // Maintainer info form
   const [maintainerInfoForm, setMaintainerInfoForm] = useState({
     maintainerFirstName: "",
     maintainerLastName: "",
     maintainerEmail: "",
   });
-
   const updateMaintainerInfoFormField = (field, value) => {
     setMaintainerInfoForm((prev) => ({ ...prev, [field]: value }));
   };
 
+  // Confirm form
   const [confirmForm, setConfirmForm] = useState({
     outputPath: "",
     outputFormat: [],
   });
-
   const updateConfirmFormField = (field, value) => {
     setConfirmForm((prev) => ({ ...prev, [field]: value }));
   };
@@ -51,6 +52,26 @@ const Home = () => {
       docs: docs,
     };
     StartProcess(data);
+  };
+
+  const resetAllForms = () => {
+    setAppInfoForm({
+      fileName: "",
+      version: "",
+      arch: [],
+      desktopName: "",
+    });
+
+    setMaintainerInfoForm({
+      maintainerFirstName: "",
+      maintainerLastName: "",
+      maintainerEmail: "",
+    });
+
+    setConfirmForm({
+      outputPath: "",
+      outputFormat: [],
+    });
   };
 
   const steps = [
@@ -114,7 +135,7 @@ const Home = () => {
 
   return (
     <div className="h-screen bg-white dark:bg-neutral-800">
-      <Stepper steps={steps} />
+      <Stepper steps={steps} onFinished={resetAllForms} />
     </div>
   );
 };

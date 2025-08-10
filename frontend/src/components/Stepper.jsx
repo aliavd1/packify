@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const Stepper = ({ steps }) => {
+const Stepper = ({ steps, onFinished }) => {
   const [currentStep, setCurrentStep] = useState(0);
 
   const goNext = () => {
@@ -9,6 +9,7 @@ const Stepper = ({ steps }) => {
     } else {
       steps[steps.length - 1].onSubmit();
       setCurrentStep(0);
+      onFinished();
     }
   };
 
