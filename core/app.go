@@ -19,8 +19,8 @@ type InstallationFileInfo struct {
 	Arch                string
 	IconPath            string
 	BinaryPath          string
-	outputFormat        []string
-	outputPath          string
+	OutputFormat        []string
+	OutputPath          string
 	DesktopName         string
 	MaintainerFirstName string
 	MaintainerLastName  string
@@ -179,50 +179,63 @@ func (ifi *InstallationFileInfo) setInfo(data map[string]any) {
 	if v, ok := data["binaryPath"].(string); ok {
 		ifi.BinaryPath = v
 	}
-	if v, ok := data["outputFormat"].([]string); ok {
-		ifi.outputFormat = v
+	if raw, ok := data["outputFormat"].([]interface{}); ok {
+		strs := make([]string, len(raw))
+		for i, val := range raw {
+			if s, ok := val.(string); ok {
+				strs[i] = s
+			}
+		}
+		ifi.OutputFormat = strs
 	}
 	if v, ok := data["outputPath"].(string); ok {
-		ifi.outputPath = v
+		ifi.OutputPath = v
 	}
 	if v, ok := data["desktopName"].(string); ok {
 		ifi.DesktopName = v + ".desktop"
 	}
-	if v, ok := data["docs"].([]string); ok {
-		ifi.Docs = v
+	if raw, ok := data["docs"].([]interface{}); ok {
+		strs := make([]string, len(raw))
+		for i, val := range raw {
+			if s, ok := val.(string); ok {
+				strs[i] = s
+			}
+		}
+		ifi.Docs = strs
 	}
 }
 
 func (ifi *InstallationFileInfo) StartProcess(data map[string]any) {
 	ifi.setInfo(data)
-	tempDir, _ := os.MkdirTemp("", "debgen")
-	defer os.RemoveAll(tempDir)
+	// tempDir, _ := os.MkdirTemp("", "debgen")
+	// defer os.RemoveAll(tempDir)
 
 	fmt.Println("[+] Creating structure...")
-	debRoot := filepath.Join(tempDir, ifi.FileName+"-deb")
-	createDebStructure(ifi, debRoot)
+	// debRoot := filepath.Join(tempDir, ifi.FileName+"-deb")
+	debRoot := ifi.FileName + "-deb"
 
-	for _, format := range ifi.outputFormat {
+	for _, format := range ifi.OutputFormat {
+		fmt.Println("format: ", format)
 		switch format {
 		case ".deb":
 			fmt.Println("[+] Building .deb...")
 			createDebStructure(ifi, debRoot)
 			debPath := buildDeb(ifi, debRoot)
-			copyFile(debPath, filepath.Join(ifi.outputPath, filepath.Base(debPath)))
+			copyFile(debPath, filepath.Join(ifi.OutputPath, filepath.Base(debPath)))
 
-		case ".tar":
+		case ".tar.gz":
 			fmt.Println("[+] Building .tar.gz...")
 			tarPath := buildTarGz(ifi, debRoot)
-			copyFile(tarPath, filepath.Join(ifi.outputPath, filepath.Base(tarPath)))
+			copyFile(tarPath, filepath.Join(ifi.OutputPath, filepath.Base(tarPath)))
 
 		case "AppImage":
 			fmt.Println("[+] Building AppImage...")
 			appImagePath := buildAppImage(ifi, debRoot)
-			copyFile(appImagePath, filepath.Join(ifi.outputPath, filepath.Base(appImagePath)))
+			copyFile(appImagePath, filepath.Join(ifi.OutputPath, filepath.Base(appImagePath)))
 
 		default:
 			fmt.Println("[-] Unknown format...")
 		}
 	}
-	fmt.Println("✅ Done. Packages saved to:", ifi.outputPath)
+	fmt.Println("✅ Done. Packages saved to:", ifi.OutputPath)
 }
