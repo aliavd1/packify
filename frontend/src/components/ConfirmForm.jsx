@@ -23,7 +23,6 @@ const ConfirmForm = ({ form, onChange }) => {
           options={selectOptions}
           value={form.outputFormat}
           onChange={(e) => onChange("outputFormat", e)}
-          multi
         />
       </div>
 

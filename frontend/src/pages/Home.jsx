@@ -11,7 +11,7 @@ const Home = () => {
   const [appInfoForm, setAppInfoForm] = useState({
     fileName: "",
     version: "",
-    arch: [],
+    arch: "",
     desktopName: "",
   });
   const updateAppInfoFormField = (field, value) => {
@@ -31,7 +31,7 @@ const Home = () => {
   // Confirm form
   const [confirmForm, setConfirmForm] = useState({
     outputPath: "",
-    outputFormat: [],
+    outputFormat: "",
   });
   const updateConfirmFormField = (field, value) => {
     setConfirmForm((prev) => ({ ...prev, [field]: value }));
@@ -46,7 +46,6 @@ const Home = () => {
       ...maintainerInfoForm,
       ...appInfoForm,
       ...confirmForm,
-      arch: appInfoForm.arch.join(","),
       iconPath: iconPath,
       binaryPath: binaryPath,
       docs: docs,
@@ -58,7 +57,7 @@ const Home = () => {
     setAppInfoForm({
       fileName: "",
       version: "",
-      arch: [],
+      arch: "",
       desktopName: "",
     });
 
@@ -70,7 +69,7 @@ const Home = () => {
 
     setConfirmForm({
       outputPath: "",
-      outputFormat: [],
+      outputFormat: "",
     });
   };
 

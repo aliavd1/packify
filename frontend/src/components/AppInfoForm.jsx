@@ -41,7 +41,6 @@ const AppInfoForm = ({ form, onChange }) => {
           options={selectOptions}
           value={form.arch}
           onChange={(e) => onChange("arch", e)}
-          multi
         />
       </div>
 
