@@ -53,7 +53,7 @@ const Stepper = ({ steps, onFinished }) => {
       </div>
 
       {/* Step Header */}
-      <p className="!text-4xl font-semibold dark:text-white">
+      <p className="!text-3xl font-semibold dark:text-white">
         {steps[currentStep].header}
       </p>
 
