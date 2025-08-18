@@ -8,95 +8,65 @@ import MaintainerInfoForm from "../components/MaintainerInfoForm";
 
 const Home = () => {
   // App info form
-  const [appInfoForm, setAppInfoForm] = useState({
+  const [form, setForm] = useState({
+    maintainerFirstName: "",
+    maintainerLastName: "",
+    maintainerEmail: "",
     fileName: "",
     version: "",
     arch: "",
     desktopName: "",
-  });
-  const updateAppInfoFormField = (field, value) => {
-    setAppInfoForm((prev) => ({ ...prev, [field]: value }));
-  };
-
-  // Maintainer info form
-  const [maintainerInfoForm, setMaintainerInfoForm] = useState({
-    maintainerFirstName: "",
-    maintainerLastName: "",
-    maintainerEmail: "",
-  });
-  const updateMaintainerInfoFormField = (field, value) => {
-    setMaintainerInfoForm((prev) => ({ ...prev, [field]: value }));
-  };
-
-  // Confirm form
-  const [confirmForm, setConfirmForm] = useState({
-    outputPath: "",
+    iconPath: "",
+    binaryPath: "",
+    docs: [],
     outputFormat: "",
+    outputPath: "",
   });
-  const updateConfirmFormField = (field, value) => {
-    setConfirmForm((prev) => ({ ...prev, [field]: value }));
+  const updateFormField = (field, value) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
   };
-
-  const [iconPath, setIconPath] = useState();
-  const [binaryPath, setBinaryPath] = useState();
-  const [docs, setDocs] = useState([]);
 
   const handleSubmit = () => {
-    const data = {
-      ...maintainerInfoForm,
-      ...appInfoForm,
-      ...confirmForm,
-      iconPath: iconPath,
-      binaryPath: binaryPath,
-      docs: docs,
-    };
-    StartProcess(data);
+    StartProcess(form);
   };
 
-  const resetAllForms = () => {
-    setAppInfoForm({
+  const resetForm = () => {
+    setForm({
+      maintainerFirstName: "",
+      maintainerLastName: "",
+      maintainerEmail: "",
       fileName: "",
       version: "",
       arch: "",
       desktopName: "",
-    });
-
-    setMaintainerInfoForm({
-      maintainerFirstName: "",
-      maintainerLastName: "",
-      maintainerEmail: "",
-    });
-
-    setConfirmForm({
-      outputPath: "",
+      iconPath: "",
+      binaryPath: "",
+      docs: [],
       outputFormat: "",
+      outputPath: "",
     });
   };
 
   const steps = [
     {
       header: "Complete maintainer info",
-      content: (
-        <MaintainerInfoForm
-          form={maintainerInfoForm}
-          onChange={updateMaintainerInfoFormField}
-        />
-      ),
+      content: <MaintainerInfoForm form={form} onChange={updateFormField} />,
     },
     {
       header: "Complete app info",
-      content: (
-        <AppInfoForm form={appInfoForm} onChange={updateAppInfoFormField} />
-      ),
+      content: <AppInfoForm form={form} onChange={updateFormField} />,
     },
     {
       header: "Select icon",
       content: (
         <ChooseFile
+          key="applicationIcon"
           title="Select Application Icon"
           displayName="Icon Files (*.png, *.svg, *.xpm)"
           pattern="*.png;*.svg;*.xpm"
-          onChange={setIconPath}
+          form={form}
+          fieldName="iconPath"
+          onChange={updateFormField}
         />
       ),
     },
@@ -104,10 +74,13 @@ const Home = () => {
       header: "Select binary file",
       content: (
         <ChooseFile
+          key="binaryFile"
           title="Select Executable File"
           displayName="Executable Files (*)"
           pattern="*"
-          onChange={setBinaryPath}
+          form={form}
+          fieldName="binaryPath"
+          onChange={updateFormField}
         />
       ),
     },
@@ -115,26 +88,27 @@ const Home = () => {
       header: "Select docs, licences, readme, ...",
       content: (
         <ChooseFile
+          key="docs"
           multi
           title="Select Documentation Files"
           displayName="Documentation Files (*.md, *.txt, *.html, *.gz)"
           pattern="*.md;*.txt;*.html;*.gz"
-          onChange={setDocs}
+          form={form}
+          fieldName="docs"
+          onChange={updateFormField}
         />
       ),
     },
     {
       header: "Confirm",
-      content: (
-        <ConfirmForm form={confirmForm} onChange={updateConfirmFormField} />
-      ),
+      content: <ConfirmForm form={form} onChange={updateFormField} />,
       onSubmit: handleSubmit,
     },
   ];
 
   return (
     <div className="h-screen bg-white dark:bg-neutral-800">
-      <Stepper steps={steps} onFinished={resetAllForms} />
+      <Stepper steps={steps} onFinished={resetForm} />
     </div>
   );
 };

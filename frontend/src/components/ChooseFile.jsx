@@ -6,12 +6,18 @@ import {
   FileDrop,
   FileDropOff,
 } from "../../wailsjs/go/core/FilePicker";
-import { EventsOn } from "../../../../exam-result/frontend/wailsjs/runtime/runtime";
+import {
+  EventsEmit,
+  EventsOn,
+} from "../../../../exam-result/frontend/wailsjs/runtime/runtime";
 
 const ChooseFile = ({
+  key,
   title,
   displayName,
   pattern,
+  form,
+  fieldName,
   onChange,
   multi = false,
 }) => {
@@ -23,9 +29,9 @@ const ChooseFile = ({
     setDroppedFiles(fileArray);
 
     if (multi) {
-      onChange(fileArray);
+      onChange(fieldName, fileArray);
     } else {
-      onChange(fileArray[0]);
+      onChange(fieldName, fileArray[0]);
     }
   };
 
@@ -59,6 +65,7 @@ const ChooseFile = ({
 
     const eventOff = EventsOn("fileDropEvent", (paths) => {
       processFiles(paths);
+      EventsEmit("fileDropEvent", []);
     });
     return () => {
       eventOff();
@@ -68,6 +75,7 @@ const ChooseFile = ({
 
   return (
     <div
+      key={key}
       onClick={openFilePicker}
       onDrop={handleDrop}
       onDragOver={handleDragOver}
