@@ -16,7 +16,6 @@ const ChooseFile = ({
   title,
   displayName,
   pattern,
-  form,
   fieldName,
   onChange,
   multi = false,

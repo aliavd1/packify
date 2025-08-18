@@ -64,7 +64,6 @@ const Home = () => {
           title="Select Application Icon"
           displayName="Icon Files (*.png, *.svg, *.xpm)"
           pattern="*.png;*.svg;*.xpm"
-          form={form}
           fieldName="iconPath"
           onChange={updateFormField}
         />
@@ -78,7 +77,6 @@ const Home = () => {
           title="Select Executable File"
           displayName="Executable Files (*)"
           pattern="*"
-          form={form}
           fieldName="binaryPath"
           onChange={updateFormField}
         />
@@ -93,7 +91,6 @@ const Home = () => {
           title="Select Documentation Files"
           displayName="Documentation Files (*.md, *.txt, *.html, *.gz)"
           pattern="*.md;*.txt;*.html;*.gz"
-          form={form}
           fieldName="docs"
           onChange={updateFormField}
         />
