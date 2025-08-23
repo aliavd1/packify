@@ -7,9 +7,10 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"packify/assets"
 	"packify/config"
 	"path/filepath"
-	"strings"
+	"runtime"
 )
 
 type InstallationFileInfo struct {
@@ -32,12 +33,45 @@ func NewInstallationFileInfo(appConfig *config.AppConfig) *InstallationFileInfo 
 	return &InstallationFileInfo{appConfig: appConfig}
 }
 
+func getArch(key string) string {
+	var archMap = map[string]string{
+		"amd64":   "x86_64",
+		"386":     "i686",
+		"arm":     "armhf",
+		"arm64":   "aarch64",
+		"ppc64":   "ppc64",
+		"ppc64le": "ppc64le",
+		"riscv64": "riscv64",
+		"s390x":   "s390x",
+	}
+
+	result, ok := archMap[key]
+	if !ok {
+		return "x86_64"
+	}
+
+	return result
+}
+
+func createDesktopIcon(ifi *InstallationFileInfo, dir string) {
+	execDir := ""
+	if ifi.OutputFormat == "deb" {
+		execDir = "/usr/local/bin/"
+	}
+
+	entry := fmt.Sprintf("[Desktop Entry]\nVersion=1.0\nName=%s\nExec=%s%s\nIcon=%s\nType=Application\nCategories=Utility;",
+		ifi.FileName, execDir, ifi.FileName, ifi.FileName,
+	)
+	os.WriteFile(filepath.Join(dir, ifi.DesktopName+".desktop"), []byte(entry), 0644)
+}
+
 func createDebStructure(ifi *InstallationFileInfo, root string) {
+	fmt.Println("[+] Creating deb structure...")
 	deb := filepath.Join(root, "DEBIAN")
 	bin := filepath.Join(root, "usr", "local", "bin")
 	icon := filepath.Join(root, "usr", "share", "icons", "hicolor", "256x256", "apps")
 	desktop := filepath.Join(root, "usr", "share", "applications")
-	docs := filepath.Join(root, "usr", "share", "docs", ifi.FileName)
+	docs := filepath.Join(root, "usr", "share", "doc", ifi.FileName)
 	os.MkdirAll(deb, 0755)
 	os.MkdirAll(bin, 0755)
 	os.MkdirAll(icon, 0755)
@@ -58,10 +92,7 @@ func createDebStructure(ifi *InstallationFileInfo, root string) {
 	copyFile(ifi.BinaryPath, filepath.Join(bin, ifi.FileName))
 	copyFile(ifi.IconPath, filepath.Join(icon, ifi.FileName+".png"))
 
-	desktopEntry := fmt.Sprintf("[Desktop Entry]\nVersion=1.0\nName=%s\nExec=/usr/local/bin/%s\nIcon=%s\nType=Application\nCategories=Utility;",
-		ifi.FileName, ifi.FileName, ifi.FileName,
-	)
-	os.WriteFile(filepath.Join(desktop, ifi.DesktopName), []byte(desktopEntry), 0644)
+	createDesktopIcon(ifi, desktop)
 
 	for _, doc := range ifi.Docs {
 		copyFile(doc, filepath.Join(docs, filepath.Base(doc)))
@@ -69,14 +100,19 @@ func createDebStructure(ifi *InstallationFileInfo, root string) {
 }
 
 func buildDeb(ifi *InstallationFileInfo, root string) string {
-	debFile := fmt.Sprintf("%s_%s.deb", ifi.FileName, ifi.Version)
+	createDebStructure(ifi, root)
+	debFile := fmt.Sprintf("%s_%s_%s.%s", ifi.FileName, ifi.Version, ifi.Arch, ifi.OutputFormat)
 	debPath := filepath.Join(filepath.Dir(root), debFile)
 	exec.Command("dpkg-deb", "--build", root, debPath).Run()
 	return debPath
 }
 
 func buildTarGz(ifi *InstallationFileInfo, root string) string {
-	tarPath := filepath.Join(filepath.Dir(root), fmt.Sprintf("%s_%s_%s.tar.gz", ifi.FileName, ifi.Version, ifi.Arch))
+	var paths []string
+	paths = append(paths, ifi.BinaryPath, ifi.IconPath)
+	paths = append(paths, ifi.Docs...)
+
+	tarPath := filepath.Join(filepath.Dir(root), fmt.Sprintf("%s_%s_%s.%s", ifi.FileName, ifi.Version, ifi.Arch, ifi.OutputFormat))
 	f, _ := os.Create(tarPath)
 	defer f.Close()
 
@@ -86,51 +122,79 @@ func buildTarGz(ifi *InstallationFileInfo, root string) string {
 	tarWriter := tar.NewWriter(gz)
 	defer tarWriter.Close()
 
-	filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
-		if err != nil || info.IsDir() {
-			return nil
+	for _, path := range paths {
+		rel, err := filepath.Rel(path, path)
+		if err != nil {
+			fmt.Println(err)
 		}
 
-		rel, err := filepath.Rel(root, path)
+		fileInfo, _ := os.Stat(path)
+		hdr, err := tar.FileInfoHeader(fileInfo, "")
 		if err != nil {
-			return err
+			fmt.Println(err)
 		}
-
-		hdr, err := tar.FileInfoHeader(info, "")
-		if err != nil {
-			return err
-		}
-		hdr.Name = rel
+		hdr.Name = filepath.ToSlash(rel)
 
 		if err := tarWriter.WriteHeader(hdr); err != nil {
-			return err
+			fmt.Println(err)
 		}
 
 		fp, err := os.Open(path)
 		if err != nil {
-			return err
+			fmt.Println(err)
 		}
-		defer fp.Close()
 
 		_, err = io.Copy(tarWriter, fp)
-		return err
-	})
+		if err != nil {
+			fmt.Println(err)
+		}
+		fp.Close()
+	}
 
 	return tarPath
 }
 
 func buildAppImage(ifi *InstallationFileInfo, root string) string {
-	appDir := filepath.Join(filepath.Dir(root), ifi.FileName+".AppDir")
+	appDir := filepath.Join(root, "AppDir")
 	os.MkdirAll(appDir, 0755)
 
-	exec.Command("cp", "-r", filepath.Join(root, "usr"), appDir).Run()
+	// Create appRun
 	appRun := filepath.Join(appDir, "AppRun")
-	os.WriteFile(appRun, []byte("#!/bin/sh\nexec /usr/local/bin/"+ifi.FileName), 0755)
+	appRunSh := `#!/bin/sh
+	HERE="$(dirname "$(readlink -f "$0")")"
+	exec "$HERE/` + ifi.FileName + `" "$@"`
+	os.WriteFile(appRun, []byte(appRunSh), 0755)
+	os.Chmod(appRun, 0755)
 
-	exec.Command("chmod", "+x", appRun).Run()
-	appImage := strings.TrimSuffix(appDir, ".AppDir") + ".AppImage"
-	exec.Command("appimagetool", appDir, appImage).Run()
-	return appImage
+	// Copy binary file
+	copyFile(ifi.BinaryPath, filepath.Join(appDir, ifi.FileName))
+	os.Chmod(filepath.Join(appDir, ifi.FileName), 0755)
+
+	// Copy icon file
+	copyFile(ifi.IconPath, filepath.Join(appDir, ifi.FileName+".png"))
+	createDesktopIcon(ifi, appDir)
+
+	tmpTool, err := os.CreateTemp("", "appimagetool")
+	if err != nil {
+		fmt.Println(err)
+	}
+	tmpTool.Write(assets.AppImagetoolData)
+	tmpTool.Close()
+	os.Chmod(tmpTool.Name(), 0755)
+	defer os.Remove(tmpTool.Name())
+
+	arch := getArch(runtime.GOARCH)
+	outputName := fmt.Sprintf("%s_%s_%s.%s", ifi.FileName, ifi.Version, ifi.Arch, ifi.OutputFormat)
+	outputPath := filepath.Join(root, outputName)
+	cmd := exec.Command(tmpTool.Name(), appDir, outputPath)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Env = append(os.Environ(), "ARCH="+arch)
+	if err := cmd.Run(); err != nil {
+		fmt.Println(err)
+	}
+	os.Chmod(outputPath, 0755)
+	return outputPath
 }
 
 func copyFile(src, dst string) {
@@ -173,7 +237,7 @@ func (ifi *InstallationFileInfo) setInfo(data map[string]any) {
 		ifi.OutputPath = v
 	}
 	if v, ok := data["desktopName"].(string); ok {
-		ifi.DesktopName = v + ".desktop"
+		ifi.DesktopName = v
 	}
 	if raw, ok := data["docs"].([]interface{}); ok {
 		strs := make([]string, len(raw))
@@ -188,29 +252,22 @@ func (ifi *InstallationFileInfo) setInfo(data map[string]any) {
 
 func (ifi *InstallationFileInfo) StartProcess(data map[string]any) {
 	ifi.setInfo(data)
-	tempDir, _ := os.MkdirTemp("", "packify-")
-	defer os.RemoveAll(tempDir)
+	rootDir, _ := os.MkdirTemp("", "packify-")
+	defer os.RemoveAll(rootDir)
 
-	fmt.Println("[+] Creating structure...")
-	debRoot := filepath.Join(tempDir, ifi.FileName+"-deb")
+	fmt.Printf("[+] Building %s...", ifi.OutputFormat)
 
 	switch ifi.OutputFormat {
-	case ".deb":
-		fmt.Println("[+] Building .deb...")
-		createDebStructure(ifi, debRoot)
-		debPath := buildDeb(ifi, debRoot)
+	case "deb":
+		debPath := buildDeb(ifi, rootDir)
 		copyFile(debPath, filepath.Join(ifi.OutputPath, filepath.Base(debPath)))
 
-	case ".tar.gz":
-		fmt.Println("[+] Building .tar.gz...")
-		targzRoot := filepath.Join(tempDir, ifi.FileName+"-tar.gz")
-		tarPath := buildTarGz(ifi, targzRoot)
+	case "tar.gz":
+		tarPath := buildTarGz(ifi, rootDir)
 		copyFile(tarPath, filepath.Join(ifi.OutputPath, filepath.Base(tarPath)))
 
 	case "AppImage":
-		fmt.Println("[+] Building AppImage...")
-		appImageRoot := filepath.Join(tempDir, ifi.FileName+"-AppImage")
-		appImagePath := buildAppImage(ifi, appImageRoot)
+		appImagePath := buildAppImage(ifi, rootDir)
 		copyFile(appImagePath, filepath.Join(ifi.OutputPath, filepath.Base(appImagePath)))
 
 	default:
