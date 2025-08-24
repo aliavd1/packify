@@ -94,7 +94,7 @@ const Select = ({ options, value, onChange, multi = false }) => {
       </button>
 
       {open && (
-        <div className="absolute mt-2 w-full rounded-lg bg-white dark:bg-gray-700 shadow-lg z-10 origin-top transform opacity-0 animate-dropdown">
+        <div className="max-h-[150px] overflow-y-scroll absolute mt-2 w-full rounded-lg bg-white dark:bg-gray-700 shadow-lg z-10 origin-top transform opacity-0 animate-dropdown">
           {options.map((option) => {
             const isSelected = multi
               ? Array.isArray(value) && value.includes(option)
