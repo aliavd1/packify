@@ -1,13 +1,17 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Stepper from "../components/Stepper";
 import AppInfoForm from "../components/AppInfoForm";
 import ChooseFile from "../components/ChooseFile";
 import ConfirmForm from "../components/ConfirmForm";
 import { StartProcess } from "../../wailsjs/go/core/InstallationFileInfo";
 import MaintainerInfoForm from "../components/MaintainerInfoForm";
+import Dialog from "../components/Dialog";
+import Spinner from "../components/Spinner";
 
 const Home = () => {
-  // App info form
+  const [creationLoading, setCreationLoading] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState(null);
+  const [dialogOKBtn, setDialogOKBtn] = useState(true);
   const [form, setForm] = useState({
     maintainerFirstName: "",
     maintainerLastName: "",
@@ -22,12 +26,22 @@ const Home = () => {
     outputFormat: "",
     outputPath: "",
   });
+  const dialogRef = useRef(null);
+
   const updateFormField = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = () => {
-    StartProcess(form);
+    setCreationLoading(true);
+    setDialogMessage("Creating package...");
+    // setDialogOKBtn(false);
+    dialogRef.current.open();
+
+    // StartProcess(form)
+    //   .then((res) => setDialogMessage(res))
+    //   .catch((err) => setDialogMessage(err))
+    //   .finally(() => setDialogOKBtn(true));
   };
 
   const resetForm = () => {
@@ -45,6 +59,10 @@ const Home = () => {
       outputFormat: "",
       outputPath: "",
     });
+  };
+
+  const closeDialog = () => {
+    dialogRef.current.close();
   };
 
   const steps = [
@@ -106,6 +124,25 @@ const Home = () => {
   return (
     <div className="h-screen bg-white dark:bg-neutral-800">
       <Stepper steps={steps} onFinished={resetForm} />
+      <Dialog ref={dialogRef} persistent>
+        <div className="flex flex-col justify-center items-center gap-y-3">
+          <div className="flex justify-center items-center gap-x-2">
+            {creationLoading && <Spinner size={10} />}
+            {dialogMessage && (
+              <span className="dark:text-white">{dialogMessage}</span>
+            )}
+          </div>
+          {dialogOKBtn && (
+            <button
+              onClick={closeDialog}
+              className="px-4 py-2 rounded bg-blue-900 text-white cursor-pointer 
+              will-change-transform duration-300 active:scale-95"
+            >
+              OK
+            </button>
+          )}
+        </div>
+      </Dialog>
     </div>
   );
 };
