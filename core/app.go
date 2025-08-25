@@ -263,7 +263,7 @@ func (ifi *InstallationFileInfo) setInfo(data map[string]any) {
 	}
 }
 
-func (ifi *InstallationFileInfo) StartProcess(data map[string]any) {
+func (ifi *InstallationFileInfo) StartProcess(data map[string]any) string {
 	ifi.setInfo(data)
 	rootDir, _ := os.MkdirTemp("", "packify-")
 	defer os.RemoveAll(rootDir)
@@ -284,7 +284,7 @@ func (ifi *InstallationFileInfo) StartProcess(data map[string]any) {
 		copyFile(appImagePath, filepath.Join(ifi.OutputPath, filepath.Base(appImagePath)))
 
 	default:
-		fmt.Println("[-] Unknown format...")
+		return "[-] Unknown format..."
 	}
-	fmt.Println("✅ Done. Packages saved to:", ifi.OutputPath)
+	return fmt.Sprintf("Done. Packages saved to: %s", ifi.OutputPath)
 }
