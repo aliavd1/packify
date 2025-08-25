@@ -7,35 +7,35 @@
 /* FontFace */
 /************************************************/
 @font-face {
-    font-family: "Roboto-Regular";
-    src: url("../assets/fonts/Roboto-Regular.ttf?-fvbane") format("truetype");
-    font-weight: normal;
-    font-style: normal;
+  font-family: "Roboto-Regular";
+  src: url("../assets/fonts/Roboto-Regular.ttf?-fvbane") format("truetype");
+  font-weight: normal;
+  font-style: normal;
 }
 
 /************************************************/
 /* Root, themes */
 /************************************************/
 :root {
-    --font-family: "Roboto-Regular" !important;
+  --font-family: "Roboto-Regular" !important;
 }
 
 /************************************************/
 /* All, body, html */
 /************************************************/
 * {
-    font-family: var(--font-family);
-    font-size: 15px;
-    user-select: none;
-    -moz-user-select: none;
+  font-family: var(--font-family);
+  font-size: 15px;
+  user-select: none;
+  -moz-user-select: none;
 }
 
 html, body, #root {
-    width: 100% !important;
-    height: 100% !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    background-color: white;
+  width: 100% !important;
+  height: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background-color: white;
 }
 
 input, textarea {
@@ -44,63 +44,46 @@ input, textarea {
 }
 
 ::selection {
-    @apply !bg-blue-500;
+  @apply !bg-blue-500;
 }
 
-@keyframes dropdown {
-  0% {
-    transform: scale(95%);
-    opacity: 0;
+/************************************************/
+/* Utilities (animations, helpers) */
+/************************************************/
+@layer utilities {
+  .animate-dropdown {
+    animation: dropdown 150ms ease-out forwards;
   }
-  100% {
-    transform: scale(100%);
-    opacity: 1;
+
+  .spin-fast {
+    animation: spin 1000ms linear infinite;
   }
-}
 
-.animate-dropdown {
-  animation: dropdown 150ms ease-out forwards;
-}
+  .fadein-scale {
+    animation: fade-in-scale 0.2s ease-out forwards;
+  }
 
-.spin-fast {
-    animation: spin 1000ms linear infinite !important;
+  .fadeout-scale {
+    animation: fade-out-scale 0.2s ease-in forwards;
+  }
+
+  @keyframes dropdown {
+    0%   { transform: scale(0.95); opacity: 0; }
+    100% { transform: scale(1);    opacity: 1; }
   }
 
   @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-.fadein-scale {
-    animation: fade-in-scale 0.2s ease-out forwards !important;
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
   }
 
   @keyframes fade-in-scale {
-    from {
-      opacity: 0;
-      transform: scale(0.7);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-
-.fadeout-scale {
-    animation: fade-out-scale 0.2s ease-out forwards !important;
+    from { opacity: 0; transform: scale(0.7); }
+    to   { opacity: 1; transform: scale(1);   }
   }
 
   @keyframes fade-out-scale {
-    from {
-      opacity: 1;
-      transform: scale(1);
-    }
-    to {
-      opacity: 0;
-      transform: scale(0.7);
-    }
+    from { opacity: 1; transform: scale(1);   }
+    to   { opacity: 0; transform: scale(0.7); }
   }
+}
