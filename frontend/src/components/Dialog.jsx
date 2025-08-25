@@ -7,6 +7,7 @@ const Dialog = forwardRef(
     ref
   ) => {
     const [isDialogOpen, setDialogOpen] = useState(false);
+    const [mounted, setMounted] = useState(false);
 
     const handleDialogClick = (e) => {
       e.stopPropagation();
@@ -41,17 +42,34 @@ const Dialog = forwardRef(
       };
     }, []);
 
+    useEffect(() => {
+      if (isDialogOpen) {
+        setMounted(true);
+      }
+    }, [isDialogOpen]);
+
+    if (!mounted) return null;
+
     return (
       <div
         onClick={persistent ? null : close}
-        className={`h-full fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 transition-opacity z-50 ${
-          isDialogOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        className={`h-full fixed inset-0 flex items-center justify-center z-50 ${
+          isDialogOpen ? "pointer-events" : "pointer-events-none"
         }`}
       >
         <div
+          className={`absolute inset-0 bg-black transition-opacity ${
+            isDialogOpen ? "opacity-60" : "opacity-0"
+          }`}
+        />
+
+        <div
           onClick={handleDialogClick}
-          className={`max-w-[400px] md:max-w-[500px] w-full bg-white dark:bg-neutral-800 p-6 rounded-xl shadow-lg transform transition-transform ${
-            isDialogOpen ? "animate-fadeInScale" : "animate-fadeOutScale"
+          onAnimationEnd={() => {
+            if (!isDialogOpen) setMounted(false);
+          }}
+          className={`relative max-w-[400px] w-full bg-white dark:bg-neutral-800 p-6 rounded-xl shadow-lg transform transition-transform ${
+            isDialogOpen ? "fadein-scale" : "fadeout-scale"
           }`}
         >
           {header && (
