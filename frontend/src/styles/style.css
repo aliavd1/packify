@@ -91,7 +91,7 @@ input, textarea {
   }
 
 .fadeout-scale {
-    animation: fade-in-scale 0.2s ease-out forwards !important;
+    animation: fade-out-scale 0.2s ease-out forwards !important;
   }
 
   @keyframes fade-out-scale {
