@@ -2,7 +2,20 @@ import Select from "./Select";
 import { ChooseDirectoryPath } from "../../wailsjs/go/core/FilePicker";
 
 const ConfirmForm = ({ form, onChange }) => {
-  const selectOptions = ["deb", "tar.gz", "AppImage"];
+  const selectOptions = [
+    {
+      key: "deb",
+      value: "deb",
+    },
+    {
+      key: "tar.gz",
+      value: "tar.gz",
+    },
+    {
+      key: "AppImage",
+      value: "AppImage",
+    },
+  ];
 
   const handleSubmit = (e) => {
     e.preventDefault();

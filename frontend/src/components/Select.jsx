@@ -94,22 +94,22 @@ const Select = ({ options, value, onChange, multi = false }) => {
       </button>
 
       {open && (
-        <div className="max-h-[150px] overflow-y-scroll absolute mt-2 w-full rounded-lg bg-white dark:bg-gray-700 shadow-lg z-10 origin-top transform opacity-0 animate-dropdown">
+        <div className="absolute mt-2 w-full rounded-lg bg-white dark:bg-gray-700 shadow-lg z-10 origin-top transform opacity-0 animate-dropdown">
           {options.map((option) => {
             const isSelected = multi
-              ? Array.isArray(value) && value.includes(option)
-              : value === option;
+              ? Array.isArray(value) && value.includes(option.value)
+              : value === option.value;
             return (
               <div
-                key={option}
-                onClick={() => handleSelect(option)}
+                key={option.value}
+                onClick={() => handleSelect(option.value)}
                 className={`cursor-pointer px-4 py-2 m-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 ${
                   isSelected
                     ? "bg-gray-200 dark:bg-gray-600 text-gray-900 dark:text-gray-100"
                     : "text-gray-700 dark:text-gray-100"
                 }`}
               >
-                {option}
+                {option.key}
               </div>
             );
           })}

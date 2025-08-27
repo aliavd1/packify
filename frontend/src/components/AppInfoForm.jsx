@@ -2,14 +2,18 @@ import Select from "./Select";
 
 const AppInfoForm = ({ form, onChange }) => {
   const selectOptions = [
-    "amd64",
-    "386",
-    "arm",
-    "arm64",
-    "ppc64",
-    "ppc64le",
-    "riscv64",
-    "s390x",
+    {
+      key: "x86-64 (64-bit)",
+      value: "x86_64",
+    },
+    {
+      key: "x86-32 (32-bit)",
+      value: "i386",
+    },
+    {
+      key: "AArch64 (arm64)",
+      value: "aarch64",
+    },
   ];
 
   const handleSubmit = (e) => {
