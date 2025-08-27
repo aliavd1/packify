@@ -33,7 +33,7 @@ func NewInstallationFileInfo(appConfig *config.AppConfig) *InstallationFileInfo 
 	return &InstallationFileInfo{appConfig: appConfig}
 }
 
-func getArch(key string) string {
+func getSystemArch(key string) string {
 	var archMap = map[string]string{
 		"amd64":   "x86_64",
 		"386":     "i686",
@@ -196,13 +196,13 @@ func buildAppImage(ifi *InstallationFileInfo, root string) string {
 	os.Chmod(tmpTool.Name(), 0755)
 	defer os.Remove(tmpTool.Name())
 
-	arch := getArch(runtime.GOARCH)
+	systemArch := getSystemArch(runtime.GOARCH)
 	outputName := fmt.Sprintf("%s_%s_%s.%s", ifi.FileName, ifi.Version, ifi.Arch, ifi.OutputFormat)
 	outputPath := filepath.Join(root, outputName)
 	cmd := exec.Command(tmpTool.Name(), appDir, outputPath)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	cmd.Env = append(os.Environ(), "ARCH="+arch)
+	cmd.Env = append(os.Environ(), "ARCH="+systemArch)
 	if err := cmd.Run(); err != nil {
 		fmt.Println(err)
 	}
