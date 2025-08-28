@@ -4,7 +4,7 @@ const AppInfoForm = ({ form, onChange }) => {
   const selectOptions = [
     {
       key: "x86-64 (64-bit)",
-      value: "x86_64",
+      value: "amd64",
     },
     {
       key: "x86-32 (32-bit)",
@@ -12,7 +12,7 @@ const AppInfoForm = ({ form, onChange }) => {
     },
     {
       key: "AArch64 (arm64)",
-      value: "aarch64",
+      value: "arm64",
     },
   ];
 
