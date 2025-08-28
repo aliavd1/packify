@@ -11,6 +11,8 @@ import (
 	"packify/config"
 	"path/filepath"
 	"runtime"
+
+	wailsRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type InstallationFileInfo struct {
@@ -31,6 +33,10 @@ type InstallationFileInfo struct {
 
 func NewInstallationFileInfo(appConfig *config.AppConfig) *InstallationFileInfo {
 	return &InstallationFileInfo{appConfig: appConfig}
+}
+
+func (ifi *InstallationFileInfo) sendStatusMessage(message string) {
+	wailsRuntime.EventsEmit(ifi.appConfig.Ctx, "statusMessage", message)
 }
 
 func getSystemArch(key string) string {
@@ -81,7 +87,6 @@ func createUsrDirs(ifi *InstallationFileInfo, root string) map[string]string {
 }
 
 func createDebStructure(ifi *InstallationFileInfo, root string) {
-	fmt.Println("[+] Creating deb structure...")
 	deb := filepath.Join(root, "DEBIAN")
 	os.MkdirAll(deb, 0755)
 	usrPaths := createUsrDirs(ifi, root)
@@ -132,28 +137,28 @@ func buildTarGz(ifi *InstallationFileInfo, root string) string {
 	for _, path := range paths {
 		rel, err := filepath.Rel(path, path)
 		if err != nil {
-			fmt.Println(err)
+			ifi.sendStatusMessage(err.Error())
 		}
 
 		fileInfo, _ := os.Stat(path)
 		hdr, err := tar.FileInfoHeader(fileInfo, "")
 		if err != nil {
-			fmt.Println(err)
+			ifi.sendStatusMessage(err.Error())
 		}
 		hdr.Name = filepath.ToSlash(rel)
 
 		if err := tarWriter.WriteHeader(hdr); err != nil {
-			fmt.Println(err)
+			ifi.sendStatusMessage(err.Error())
 		}
 
 		fp, err := os.Open(path)
 		if err != nil {
-			fmt.Println(err)
+			ifi.sendStatusMessage(err.Error())
 		}
 
 		_, err = io.Copy(tarWriter, fp)
 		if err != nil {
-			fmt.Println(err)
+			ifi.sendStatusMessage(err.Error())
 		}
 		fp.Close()
 	}
@@ -189,7 +194,7 @@ func buildAppImage(ifi *InstallationFileInfo, root string) string {
 
 	tmpTool, err := os.CreateTemp("", "appimagetool")
 	if err != nil {
-		fmt.Println(err)
+		ifi.sendStatusMessage(err.Error())
 	}
 	tmpTool.Write(assets.AppImagetoolData)
 	tmpTool.Close()
@@ -204,7 +209,7 @@ func buildAppImage(ifi *InstallationFileInfo, root string) string {
 	cmd.Stderr = os.Stderr
 	cmd.Env = append(os.Environ(), "ARCH="+systemArch)
 	if err := cmd.Run(); err != nil {
-		fmt.Println(err)
+		ifi.sendStatusMessage(err.Error())
 	}
 	os.Chmod(outputPath, 0755)
 	return outputPath
@@ -263,12 +268,12 @@ func (ifi *InstallationFileInfo) setInfo(data map[string]any) {
 	}
 }
 
-func (ifi *InstallationFileInfo) StartProcess(data map[string]any) string {
+func (ifi *InstallationFileInfo) StartProcess(data map[string]any) {
 	ifi.setInfo(data)
 	rootDir, _ := os.MkdirTemp("", "packify-")
 	defer os.RemoveAll(rootDir)
 
-	fmt.Printf("[+] Building %s...", ifi.OutputFormat)
+	ifi.sendStatusMessage(fmt.Sprintf("Building %s package", ifi.OutputFormat))
 
 	switch ifi.OutputFormat {
 	case "deb":
@@ -284,7 +289,7 @@ func (ifi *InstallationFileInfo) StartProcess(data map[string]any) string {
 		copyFile(appImagePath, filepath.Join(ifi.OutputPath, filepath.Base(appImagePath)))
 
 	default:
-		return "[-] Unknown format..."
+		ifi.sendStatusMessage("Unknown format")
 	}
-	return fmt.Sprintf("Done. Packages saved to: %s", ifi.OutputPath)
+	ifi.sendStatusMessage(fmt.Sprintf("Done. Packages saved to: %s", ifi.OutputPath))
 }

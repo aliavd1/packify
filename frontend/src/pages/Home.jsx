@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Stepper from "../components/Stepper";
 import AppInfoForm from "../components/AppInfoForm";
 import ChooseFile from "../components/ChooseFile";
@@ -7,6 +7,10 @@ import { StartProcess } from "../../wailsjs/go/core/InstallationFileInfo";
 import MaintainerInfoForm from "../components/MaintainerInfoForm";
 import Dialog from "../components/Dialog";
 import Spinner from "../components/Spinner";
+import {
+  EventsOff,
+  EventsOn,
+} from "../../../../exam-result/frontend/wailsjs/runtime/runtime";
 
 const Home = () => {
   const [creationLoading, setCreationLoading] = useState(false);
@@ -33,15 +37,12 @@ const Home = () => {
   };
 
   const handleSubmit = () => {
-    setCreationLoading(true);
-    setDialogMessage("Creating package...");
-    // setDialogOKBtn(false);
+    // setCreationLoading(true);
+    setDialogMessage(null);
+    setDialogOKBtn(false);
     dialogRef.current.open();
 
-    // StartProcess(form)
-    //   .then((res) => setDialogMessage(res))
-    //   .catch((err) => setDialogMessage(err))
-    //   .finally(() => setDialogOKBtn(true));
+    StartProcess(form).finally(() => setDialogOKBtn(true));
   };
 
   const resetForm = () => {
@@ -120,6 +121,15 @@ const Home = () => {
       onSubmit: handleSubmit,
     },
   ];
+
+  useEffect(() => {
+    EventsOn("statusMessage", (message) => {
+      setDialogMessage(message);
+    });
+    return () => {
+      EventsOff("statusMessage");
+    };
+  }, []);
 
   return (
     <div className="h-screen bg-white dark:bg-neutral-800">
