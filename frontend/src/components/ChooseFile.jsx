@@ -6,10 +6,7 @@ import {
   FileDrop,
   FileDropOff,
 } from "../../wailsjs/go/core/FilePicker";
-import {
-  EventsEmit,
-  EventsOn,
-} from "../../../../exam-result/frontend/wailsjs/runtime/runtime";
+import { EventsOn, EventsEmit } from "../../wailsjs/runtime/runtime";
 
 const ChooseFile = ({
   key,

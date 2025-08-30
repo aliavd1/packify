@@ -7,10 +7,7 @@ import { StartProcess } from "../../wailsjs/go/core/InstallationFileInfo";
 import MaintainerInfoForm from "../components/MaintainerInfoForm";
 import Dialog from "../components/Dialog";
 import Spinner from "../components/Spinner";
-import {
-  EventsOff,
-  EventsOn,
-} from "../../../../exam-result/frontend/wailsjs/runtime/runtime";
+import { EventsOff, EventsOn } from "../../wailsjs/runtime/runtime";
 
 const Home = () => {
   const [creationLoading, setCreationLoading] = useState(false);
