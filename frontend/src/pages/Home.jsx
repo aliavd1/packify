@@ -8,6 +8,8 @@ import MaintainerInfoForm from "../components/MaintainerInfoForm";
 import Dialog from "../components/Dialog";
 import Spinner from "../components/Spinner";
 import { EventsOff, EventsOn } from "../../wailsjs/runtime/runtime";
+import { useMemo } from "react";
+import z from "zod";
 
 const Home = () => {
   const [creationLoading, setCreationLoading] = useState(false);
@@ -27,6 +29,7 @@ const Home = () => {
     outputFormat: "",
     outputPath: "",
   });
+  const [errors, setErrors] = useState({});
   const dialogRef = useRef(null);
 
   const updateFormField = (field, value) => {
@@ -63,14 +66,80 @@ const Home = () => {
     dialogRef.current.close();
   };
 
-  const steps = [
+  const maintainerInfoFormSchema = z.object({
+    maintainerFirstName: z.string().nonempty("Firstname is required."),
+    maintainerLastName: z.string().nonempty("Lastname is required."),
+    maintainerEmail: z.email().nonempty("Email is required."),
+  });
+
+  const validateMaintainerInfoForm = () => {
+    const result = maintainerInfoFormSchema.safeParse(form);
+    if (!result.success) {
+      const formattedErrors = z.treeifyError(result.error);
+      setErrors({
+        maintainerFirstName:
+          formattedErrors.properties.maintainerFirstName?.errors[0],
+        maintainerLastName:
+          formattedErrors.properties.maintainerLastName?.errors[0],
+        maintainerEmail: formattedErrors.properties.maintainerEmail?.errors[0],
+      });
+      return false;
+    } else {
+      setErrors({});
+      return true;
+    }
+  };
+
+  const appInfoFormSchema = z.object({
+    fileName: z.string().nonempty("Filename is required."),
+    version: z.string().nonempty("Version is required."),
+    arch: z.string().nonempty("Arch is required."),
+    desktopName: z.string().nonempty("Desktopname is required."),
+  });
+
+  const validateAppInfoForm = () => {
+    const result = appInfoFormSchema.safeParse(form);
+    if (!result.success) {
+      const formattedErrors = z.treeifyError(result.error);
+      setErrors({
+        fileName: formattedErrors.properties.fileName?.errors[0],
+        version: formattedErrors.properties.version?.errors[0],
+        arch: formattedErrors.properties.arch?.errors[0],
+        desktopName: formattedErrors.properties.desktopName?.errors[0],
+      });
+      return false;
+    } else {
+      setErrors({});
+      return true;
+    }
+  };
+
+  const steps = useMemo(() => [
     {
       header: "Complete maintainer info",
-      content: <MaintainerInfoForm form={form} onChange={updateFormField} />,
+      content: (
+        <MaintainerInfoForm
+          form={form}
+          onChange={updateFormField}
+          validationSchema={maintainerInfoFormSchema}
+          errors={errors}
+          setErrors={setErrors}
+        />
+      ),
+      onChanged: validateMaintainerInfoForm,
     },
     {
       header: "Complete app info",
-      content: <AppInfoForm form={form} onChange={updateFormField} />,
+      content: (
+        <AppInfoForm
+          form={form}
+          onChange={updateFormField}
+          validationSchema={appInfoFormSchema}
+          errors={errors}
+          setErrors={setErrors}
+        />
+      ),
+      onChanged: validateAppInfoForm,
     },
     {
       header: "Select icon",
@@ -115,18 +184,18 @@ const Home = () => {
     {
       header: "Confirm",
       content: <ConfirmForm form={form} onChange={updateFormField} />,
-      onSubmit: handleSubmit,
+      onChanged: handleSubmit,
     },
-  ];
+  ]);
 
-  useEffect(() => {
-    EventsOn("statusMessage", (message) => {
-      setDialogMessage(message);
-    });
-    return () => {
-      EventsOff("statusMessage");
-    };
-  }, []);
+  // useEffect(() => {
+  //   EventsOn("statusMessage", (message) => {
+  //     setDialogMessage(message);
+  //   });
+  //   return () => {
+  //     EventsOff("statusMessage");
+  //   };
+  // }, []);
 
   return (
     <div className="h-screen bg-white dark:bg-neutral-800">

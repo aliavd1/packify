@@ -1,15 +1,17 @@
 import { useState } from "react";
 
-const Stepper = ({ steps, onFinished }) => {
+const Stepper = ({ steps }) => {
   const [currentStep, setCurrentStep] = useState(0);
 
   const goNext = () => {
+    const currentStepOnChanged = steps[currentStep]?.onChanged;
+    if (currentStepOnChanged && !currentStepOnChanged()) {
+      return;
+    }
     if (currentStep < steps.length - 1) {
       setCurrentStep((prev) => prev + 1);
     } else {
-      steps[steps.length - 1].onSubmit();
       setCurrentStep(0);
-      onFinished();
     }
   };
 
@@ -54,11 +56,11 @@ const Stepper = ({ steps, onFinished }) => {
 
       {/* Step Header */}
       <p className="!text-3xl font-semibold dark:text-white">
-        {steps[currentStep].header}
+        {steps[currentStep]?.header}
       </p>
 
       {/* Step Content */}
-      <div className="mb-3">{steps[currentStep].content}</div>
+      <div className="mb-3">{steps[currentStep]?.content}</div>
 
       {/* Navigation Buttons */}
       <div className="flex justify-between">

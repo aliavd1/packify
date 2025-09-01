@@ -1,6 +1,12 @@
 import Select from "./Select";
 
-const AppInfoForm = ({ form, onChange }) => {
+const AppInfoForm = ({
+  form,
+  onChange,
+  validationSchema,
+  errors,
+  setErrors,
+}) => {
   const selectOptions = [
     {
       key: "x86-64 (64-bit)",
@@ -20,6 +26,23 @@ const AppInfoForm = ({ form, onChange }) => {
     e.preventDefault();
   };
 
+  const validateField = (fieldName, value) => {
+    const result = validationSchema.shape[fieldName].safeParse(value);
+    if (!result.success) {
+      const formattedErrors = z.treeifyError(result.error);
+      setErrors((prev) => ({
+        ...prev,
+        [fieldName]: formattedErrors.errors[0],
+      }));
+    } else {
+      setErrors((prev) => {
+        const newErr = { ...prev };
+        delete newErr[fieldName];
+        return newErr;
+      });
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6 mt-5 p-6 transition">
       <div>
@@ -29,9 +52,15 @@ const AppInfoForm = ({ form, onChange }) => {
         <input
           type="text"
           value={form.fileName}
-          onChange={(e) => onChange("fileName", e.target.value)}
+          onChange={(e) => {
+            onChange("fileName", e.target.value);
+            validateField("fileName", e.target.value);
+          }}
           className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-700 transition"
         />
+        {errors.fileName && (
+          <p className="text-red-500 text-sm mt-1">{errors.fileName}</p>
+        )}
       </div>
 
       <div>
@@ -39,11 +68,17 @@ const AppInfoForm = ({ form, onChange }) => {
           Version
         </label>
         <input
-          type="text"
+          type="number"
           value={form.version}
-          onChange={(e) => onChange("version", e.target.value)}
+          onChange={(e) => {
+            onChange("version", e.target.value);
+            validateField("version", e.target.value);
+          }}
           className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-700 transition"
         />
+        {errors.version && (
+          <p className="text-red-500 text-sm mt-1">{errors.version}</p>
+        )}
       </div>
 
       <div>
@@ -53,8 +88,14 @@ const AppInfoForm = ({ form, onChange }) => {
         <Select
           options={selectOptions}
           value={form.arch}
-          onChange={(e) => onChange("arch", e)}
+          onChange={(e) => {
+            onChange("arch", e);
+            validateField("arch", e);
+          }}
         />
+        {errors.arch && (
+          <p className="text-red-500 text-sm mt-1">{errors.arch}</p>
+        )}
       </div>
 
       <div>
@@ -64,9 +105,15 @@ const AppInfoForm = ({ form, onChange }) => {
         <input
           type="text"
           value={form.desktopName}
-          onChange={(e) => onChange("desktopName", e.target.value)}
+          onChange={(e) => {
+            onChange("desktopName", e.target.value);
+            validateField("desktopName", e.target.value);
+          }}
           className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-700 transition"
         />
+        {errors.desktopName && (
+          <p className="text-red-500 text-sm mt-1">{errors.desktopName}</p>
+        )}
       </div>
     </form>
   );
