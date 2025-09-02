@@ -211,7 +211,7 @@ const Home = () => {
           {dialogOKBtn && (
             <button
               onClick={closeDialog}
-              className="px-4 py-2 rounded bg-blue-900 text-white cursor-pointer 
+              className="px-4 py-2 rounded bg-blue-700 text-white cursor-pointer 
               will-change-transform duration-300 active:scale-95"
             >
               OK

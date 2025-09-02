@@ -1,10 +1,9 @@
 const Spinner = ({ size = 5 }) => {
   return (
     <div
-      className={`w-${size} h-${size} border-4 border-blue-900 border-t-transparent 
+      className={`w-${size} h-${size} border-4 border-blue-700 border-t-transparent 
       rounded-full spin-fast`}
-    >
-    </div>
+    ></div>
   );
 };
 

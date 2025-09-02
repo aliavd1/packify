@@ -80,7 +80,7 @@ const ChooseFile = ({
             rounded-2xl p-8 cursor-pointer transition-all duration-300
           ${
             isDragging
-              ? "border-blue-900 bg-blue-100 dark:bg-blue-900/20"
+              ? "border-blue-700 bg-blue-100 dark:bg-blue-700/20"
               : "border-gray-300 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-800"
           }
         `}
