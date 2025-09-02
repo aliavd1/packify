@@ -1,7 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown, X } from "lucide-react";
 
-const Select = ({ options, value, onChange, multi = false }) => {
+const Select = ({
+  options,
+  value,
+  onChange,
+  multi = false,
+  className = "",
+}) => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef();
 
@@ -83,7 +89,7 @@ const Select = ({ options, value, onChange, multi = false }) => {
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="w-full flex justify-between items-center cursor-pointer border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
+        className={`w-full flex justify-between items-center cursor-pointer ${className}`}
       >
         {renderValue()}
         <ChevronDown
