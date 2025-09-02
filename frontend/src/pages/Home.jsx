@@ -67,9 +67,9 @@ const Home = () => {
   };
 
   const maintainerInfoFormSchema = z.object({
-    maintainerFirstName: z.string().nonempty("Firstname is required."),
-    maintainerLastName: z.string().nonempty("Lastname is required."),
-    maintainerEmail: z.email().nonempty("Email is required."),
+    maintainerFirstName: z.string().nonempty(),
+    maintainerLastName: z.string().nonempty(),
+    maintainerEmail: z.email().nonempty(),
   });
 
   const validateMaintainerInfoForm = () => {
@@ -91,10 +91,13 @@ const Home = () => {
   };
 
   const appInfoFormSchema = z.object({
-    fileName: z.string().nonempty("Filename is required."),
-    version: z.string().nonempty("Version is required."),
-    arch: z.string().nonempty("Arch is required."),
-    desktopName: z.string().nonempty("Desktopname is required."),
+    fileName: z.string().nonempty(),
+    version: z
+      .string()
+      .regex(/^(?:0|[1-9][0-9]*:)?[0-9][A-Za-z0-9.+:~]*(?:-[A-Za-z0-9+.~]+)?$/)
+      .nonempty(),
+    arch: z.string().nonempty(),
+    desktopName: z.string().nonempty(),
   });
 
   const validateAppInfoForm = () => {
@@ -106,6 +109,26 @@ const Home = () => {
         version: formattedErrors.properties.version?.errors[0],
         arch: formattedErrors.properties.arch?.errors[0],
         desktopName: formattedErrors.properties.desktopName?.errors[0],
+      });
+      return false;
+    } else {
+      setErrors({});
+      return true;
+    }
+  };
+
+  const confirmFormSchema = z.object({
+    outputFormat: z.string().nonempty(),
+    outputPath: z.string().nonempty(),
+  });
+
+  const validateConfirmForm = () => {
+    const result = confirmFormSchema.safeParse(form);
+    if (!result.success) {
+      const formattedErrors = z.treeifyError(result.error);
+      setErrors({
+        outputFormat: formattedErrors.properties.outputFormat?.errors[0],
+        outputPath: formattedErrors.properties.outputPath?.errors[0],
       });
       return false;
     } else {
@@ -183,8 +206,20 @@ const Home = () => {
     },
     {
       header: "Confirm",
-      content: <ConfirmForm form={form} onChange={updateFormField} />,
-      onChanged: handleSubmit,
+      content: (
+        <ConfirmForm
+          form={form}
+          onChange={updateFormField}
+          validationSchema={confirmFormSchema}
+          errors={errors}
+          setErrors={setErrors}
+        />
+      ),
+      onChanged: () => {
+        if (validateConfirmForm()) {
+          handleSubmit();
+        }
+      },
     },
   ]);
 

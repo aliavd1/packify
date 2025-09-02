@@ -1,4 +1,5 @@
 import Select from "./Select";
+import z from "zod";
 
 const AppInfoForm = ({
   form,
@@ -22,10 +23,6 @@ const AppInfoForm = ({
     },
   ];
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-  };
-
   const validateField = (fieldName, value) => {
     const result = validationSchema.shape[fieldName].safeParse(value);
     if (!result.success) {
@@ -44,10 +41,13 @@ const AppInfoForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 mt-5 p-6 transition">
+    <form className="space-y-6 mt-5 p-6 transition">
       <div>
         <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">
           File Name
+          <span aria-hidden="true" className="text-red-500 ms-1">
+            *
+          </span>
         </label>
         <input
           type="text"
@@ -56,34 +56,44 @@ const AppInfoForm = ({
             onChange("fileName", e.target.value);
             validateField("fileName", e.target.value);
           }}
-          className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-700 transition"
+          className={`w-full border ${
+            errors.fileName
+              ? "border-red-500"
+              : "border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-700"
+          } rounded-lg px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 
+          dark:text-gray-100 focus:outline-none transition`}
         />
-        {errors.fileName && (
-          <p className="text-red-500 text-sm mt-1">{errors.fileName}</p>
-        )}
       </div>
 
       <div>
         <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">
           Version
+          <span aria-hidden="true" className="text-red-500 ms-1">
+            *
+          </span>
         </label>
         <input
-          type="number"
+          type="text"
           value={form.version}
           onChange={(e) => {
             onChange("version", e.target.value);
             validateField("version", e.target.value);
           }}
-          className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-700 transition"
+          className={`w-full border ${
+            errors.version
+              ? "border-red-500"
+              : "border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-700"
+          } rounded-lg px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 
+          dark:text-gray-100 focus:outline-none transition`}
         />
-        {errors.version && (
-          <p className="text-red-500 text-sm mt-1">{errors.version}</p>
-        )}
       </div>
 
       <div>
         <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">
           Architecture
+          <span aria-hidden="true" className="text-red-500 ms-1">
+            *
+          </span>
         </label>
         <Select
           options={selectOptions}
@@ -92,15 +102,21 @@ const AppInfoForm = ({
             onChange("arch", e);
             validateField("arch", e);
           }}
+          className={`w-full border ${
+            errors.arch
+              ? "border-red-500"
+              : "border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-700"
+          } rounded-lg px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 
+          dark:text-gray-100 focus:outline-none transition`}
         />
-        {errors.arch && (
-          <p className="text-red-500 text-sm mt-1">{errors.arch}</p>
-        )}
       </div>
 
       <div>
         <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">
           Desktop Name
+          <span aria-hidden="true" className="text-red-500 ms-1">
+            *
+          </span>
         </label>
         <input
           type="text"
@@ -109,11 +125,13 @@ const AppInfoForm = ({
             onChange("desktopName", e.target.value);
             validateField("desktopName", e.target.value);
           }}
-          className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-700 transition"
+          className={`w-full border ${
+            errors.desktopName
+              ? "border-red-500"
+              : "border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-700"
+          } rounded-lg px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 
+          dark:text-gray-100 focus:outline-none transition`}
         />
-        {errors.desktopName && (
-          <p className="text-red-500 text-sm mt-1">{errors.desktopName}</p>
-        )}
       </div>
     </form>
   );
