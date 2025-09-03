@@ -137,6 +137,26 @@ const Home = () => {
     }
   };
 
+  const chooseFileSchema = (fieldName) =>
+    z.object({
+      [fieldName]: z.string().nonempty(),
+    });
+
+  const validateChooseFile = (fieldName) => {
+    const schema = chooseFileSchema(fieldName);
+    const result = schema.safeParse(form);
+    if (!result.success) {
+      const formattedErrors = z.treeifyError(result.error);
+      setErrors({
+        [fieldName]: formattedErrors.properties[fieldName]?.errors[0],
+      });
+      return false;
+    } else {
+      setErrors({});
+      return true;
+    }
+  };
+
   const steps = useMemo(() => [
     {
       header: "Complete maintainer info",
@@ -168,33 +188,41 @@ const Home = () => {
       header: "Select icon",
       content: (
         <ChooseFile
-          key="applicationIcon"
+          itemKey="applicationIcon"
           title="Select Application Icon"
           displayName="Icon Files (*.png, *.svg, *.xpm)"
           pattern="*.png;*.svg;*.xpm"
           fieldName="iconPath"
           onChange={updateFormField}
+          validationSchema={chooseFileSchema("iconPath")}
+          errors={errors}
+          setErrors={setErrors}
         />
       ),
+      onChanged: () => validateChooseFile("iconPath"),
     },
     {
       header: "Select binary file",
       content: (
         <ChooseFile
-          key="binaryFile"
+          itemKey="binaryFile"
           title="Select Executable File"
           displayName="Executable Files (*)"
           pattern="*"
           fieldName="binaryPath"
           onChange={updateFormField}
+          validationSchema={chooseFileSchema("binaryPath")}
+          errors={errors}
+          setErrors={setErrors}
         />
       ),
+      onChanged: () => validateChooseFile("binaryPath"),
     },
     {
       header: "Select docs, licences, readme, ...",
       content: (
         <ChooseFile
-          key="docs"
+          itemKey="docs"
           multi
           title="Select Documentation Files"
           displayName="Documentation Files (*.md, *.txt, *.html, *.gz)"
@@ -223,14 +251,14 @@ const Home = () => {
     },
   ]);
 
-  // useEffect(() => {
-  //   EventsOn("statusMessage", (message) => {
-  //     setDialogMessage(message);
-  //   });
-  //   return () => {
-  //     EventsOff("statusMessage");
-  //   };
-  // }, []);
+  useEffect(() => {
+    EventsOn("statusMessage", (message) => {
+      setDialogMessage(message);
+    });
+    return () => {
+      EventsOff("statusMessage");
+    };
+  }, []);
 
   return (
     <div className="h-screen bg-white dark:bg-neutral-800">

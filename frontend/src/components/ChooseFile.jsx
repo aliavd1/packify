@@ -7,14 +7,18 @@ import {
   FileDropOff,
 } from "../../wailsjs/go/core/FilePicker";
 import { EventsOn, EventsEmit } from "../../wailsjs/runtime/runtime";
+import z from "zod";
 
 const ChooseFile = ({
-  key,
+  itemKey,
   title,
   displayName,
   pattern,
   fieldName,
   onChange,
+  validationSchema = undefined,
+  errors = undefined,
+  setErrors = undefined,
   multi = false,
 }) => {
   const [droppedFiles, setDroppedFiles] = useState([]);
@@ -26,8 +30,10 @@ const ChooseFile = ({
 
     if (multi) {
       onChange(fieldName, fileArray);
+      validateField(fileArray.join(","));
     } else {
       onChange(fieldName, fileArray[0]);
+      validateField(fileArray[0]);
     }
   };
 
@@ -56,6 +62,23 @@ const ChooseFile = ({
     processFiles(filesPath);
   };
 
+  const validateField = (value) => {
+    const result = validationSchema?.shape[fieldName].safeParse(value);
+    if (!result.success) {
+      const formattedErrors = z.treeifyError(result.error);
+      setErrors((prev) => ({
+        ...prev,
+        [fieldName]: formattedErrors.errors[0],
+      }));
+    } else {
+      setErrors((prev) => {
+        const newErr = { ...prev };
+        delete newErr[fieldName];
+        return newErr;
+      });
+    }
+  };
+
   useEffect(() => {
     FileDrop();
 
@@ -71,7 +94,7 @@ const ChooseFile = ({
 
   return (
     <div
-      key={key}
+      key={itemKey}
       onClick={openFilePicker}
       onDrop={handleDrop}
       onDragOver={handleDragOver}
@@ -81,8 +104,9 @@ const ChooseFile = ({
           ${
             isDragging
               ? "border-blue-700 bg-blue-100 dark:bg-blue-700/20"
-              : "border-gray-300 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-800"
+              : "border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800"
           }
+          ${errors && errors[fieldName] ? "border-red-500 bg-red-100" : ""}
         `}
     >
       <UploadCloud className="w-12 h-12 text-gray-400 dark:text-gray-500 mb-2" />
