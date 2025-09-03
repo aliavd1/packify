@@ -106,7 +106,11 @@ const ChooseFile = ({
               ? "border-blue-700 bg-blue-100 dark:bg-blue-700/20"
               : "border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800"
           }
-          ${errors && errors[fieldName] ? "border-red-500 bg-red-100" : ""}
+          ${
+            errors && errors[fieldName]
+              ? "border-red-500 bg-red-100 dark:border-red-400 dark:bg-red-600 opacity-50"
+              : ""
+          }
         `}
     >
       <UploadCloud className="w-12 h-12 text-gray-400 dark:text-gray-500 mb-2" />
