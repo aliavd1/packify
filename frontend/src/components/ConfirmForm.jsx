@@ -25,7 +25,6 @@ const ConfirmForm = ({
   ];
 
   const validateField = (fieldName, value) => {
-    console.log(validationSchema);
     const result = validationSchema.shape[fieldName].safeParse(value);
     if (!result.success) {
       const formattedErrors = z.treeifyError(result.error);
@@ -45,6 +44,7 @@ const ConfirmForm = ({
   const openDirectoryDialog = async () => {
     const dirPath = await ChooseDirectoryPath();
     onChange("outputPath", dirPath);
+    validateField("outputPath", dirPath);
   };
 
   return (
@@ -81,13 +81,10 @@ const ConfirmForm = ({
         </label>
         <input
           type="text"
+          readOnly
           value={form.outputPath}
           onClick={openDirectoryDialog}
-          onChange={(e) => {
-            onChange("outputPath", e.target.value);
-            validateField("outputPath", e.target.value);
-          }}
-          className={`w-full border ${
+          className={`w-full border cursor-pointer ${
             errors.outputPath
               ? "border-red-500"
               : "border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-700"
