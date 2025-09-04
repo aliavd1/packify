@@ -108,7 +108,7 @@ const ChooseFile = ({
           }
           ${
             errors && errors[fieldName]
-              ? "border-red-500 bg-red-100 dark:border-red-400 dark:bg-red-600 opacity-50"
+              ? "border-red-500 bg-red-100 dark:border-red-400 dark:bg-red-900"
               : ""
           }
         `}
