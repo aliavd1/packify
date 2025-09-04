@@ -12,6 +12,7 @@ import { useMemo } from "react";
 import z from "zod";
 
 const Home = () => {
+  const [step, setStep] = useState(0);
   const [creationLoading, setCreationLoading] = useState(false);
   const [dialogMessage, setDialogMessage] = useState(null);
   const [dialogOKBtn, setDialogOKBtn] = useState(true);
@@ -251,6 +252,20 @@ const Home = () => {
     },
   ]);
 
+  const goBack = () => {
+    if (step > 0) setStep((prev) => prev - 1);
+  };
+
+  const goNext = () => {
+    const currentStepOnChanged = steps[step]?.onChanged;
+    if (currentStepOnChanged && !currentStepOnChanged()) {
+      return;
+    }
+    if (step < steps.length - 1) {
+      setStep((prev) => prev + 1);
+    }
+  };
+
   useEffect(() => {
     EventsOn("statusMessage", (message) => {
       setDialogMessage(message);
@@ -262,7 +277,7 @@ const Home = () => {
 
   return (
     <div className="h-screen bg-white dark:bg-neutral-800">
-      <Stepper steps={steps} onFinished={resetForm} />
+      <Stepper step={step} steps={steps} goBack={goBack} goNext={goNext} />
       <Dialog ref={dialogRef} persistent>
         <div className="flex flex-col justify-center items-center gap-y-3">
           <div className="flex justify-center items-center gap-x-2">
@@ -273,7 +288,11 @@ const Home = () => {
           </div>
           {dialogOKBtn && (
             <button
-              onClick={closeDialog}
+              onClick={() => {
+                resetForm();
+                closeDialog();
+                setStep(0);
+              }}
               className="px-4 py-2 rounded bg-blue-700 text-white cursor-pointer 
               will-change-transform duration-300 active:scale-95"
             >
