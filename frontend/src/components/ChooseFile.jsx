@@ -10,7 +10,6 @@ import { EventsOn, EventsEmit } from "../../wailsjs/runtime/runtime";
 import z from "zod";
 
 const ChooseFile = ({
-  itemKey,
   title,
   displayName,
   pattern,
@@ -94,7 +93,6 @@ const ChooseFile = ({
 
   return (
     <div
-      key={itemKey}
       onClick={openFilePicker}
       onDrop={handleDrop}
       onDragOver={handleDragOver}
