@@ -62,19 +62,21 @@ const ChooseFile = ({
   };
 
   const validateField = (value) => {
-    const result = validationSchema?.shape[fieldName].safeParse(value);
-    if (!result.success) {
-      const formattedErrors = z.treeifyError(result.error);
-      setErrors((prev) => ({
-        ...prev,
-        [fieldName]: formattedErrors.errors[0],
-      }));
-    } else {
-      setErrors((prev) => {
-        const newErr = { ...prev };
-        delete newErr[fieldName];
-        return newErr;
-      });
+    if (validationSchema) {
+      const result = validationSchema?.shape[fieldName].safeParse(value);
+      if (!result.success) {
+        const formattedErrors = z.treeifyError(result.error);
+        setErrors((prev) => ({
+          ...prev,
+          [fieldName]: formattedErrors.errors[0],
+        }));
+      } else {
+        setErrors((prev) => {
+          const newErr = { ...prev };
+          delete newErr[fieldName];
+          return newErr;
+        });
+      }
     }
   };
 
