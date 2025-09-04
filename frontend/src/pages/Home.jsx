@@ -282,7 +282,7 @@ const Home = () => {
       <Dialog ref={dialogRef} persistent>
         <div className="flex flex-col justify-center items-center gap-y-3">
           <div className="flex justify-center items-center gap-x-2">
-            {creationLoading && <Spinner size={10} />}
+            {creationLoading && <Spinner size={7} />}
             {dialogMessage && (
               <span className="dark:text-white">{dialogMessage}</span>
             )}
