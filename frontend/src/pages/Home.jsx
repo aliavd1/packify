@@ -15,7 +15,7 @@ const Home = () => {
   const [step, setStep] = useState(0);
   const [creationLoading, setCreationLoading] = useState(false);
   const [dialogMessage, setDialogMessage] = useState(null);
-  const [dialogOKBtn, setDialogOKBtn] = useState(true);
+  const [dialogOKBtn, setDialogOKBtn] = useState(false);
   const [form, setForm] = useState({
     maintainerFirstName: "",
     maintainerLastName: "",
