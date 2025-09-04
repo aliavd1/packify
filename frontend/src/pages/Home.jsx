@@ -247,6 +247,7 @@ const Home = () => {
       onChanged: () => {
         if (validateConfirmForm()) {
           handleSubmit();
+          return true;
         }
       },
     },
