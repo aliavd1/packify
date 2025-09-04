@@ -189,7 +189,7 @@ const Home = () => {
       header: "Select icon",
       content: (
         <ChooseFile
-          itemKey="applicationIcon"
+          key="applicationIcon"
           title="Select Application Icon"
           displayName="Icon Files (*.png, *.svg, *.xpm)"
           pattern="*.png;*.svg;*.xpm"
@@ -206,7 +206,7 @@ const Home = () => {
       header: "Select binary file",
       content: (
         <ChooseFile
-          itemKey="binaryFile"
+          key="binaryFile"
           title="Select Executable File"
           displayName="Executable Files (*)"
           pattern="*"
@@ -223,7 +223,7 @@ const Home = () => {
       header: "Select docs, licences, readme, ...",
       content: (
         <ChooseFile
-          itemKey="docs"
+          key="docs"
           multi
           title="Select Documentation Files"
           displayName="Documentation Files (*.md, *.txt, *.html, *.gz)"
