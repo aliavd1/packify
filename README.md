@@ -5,7 +5,7 @@ This repository provides prebuilt Linux packages in different formats.
 
 ## Download
 
-Check the [Releases](./releases) page for the latest version.
+Check the [Releases](https://github.com/aliavd1/packify/releases/) page for the latest version.
 Available formats:
 
 - **.deb** – for Debian/Ubuntu-based distributions
