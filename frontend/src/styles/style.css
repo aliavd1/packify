@@ -66,7 +66,9 @@ input, textarea {
   .fadeout-scale {
     animation: fade-out-scale 0.2s ease-in forwards;
   }
+}
 
+@theme {
   @keyframes dropdown {
     0%   { transform: scale(0.95); opacity: 0; }
     100% { transform: scale(1);    opacity: 1; }
